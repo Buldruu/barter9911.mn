@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>barter9911.mn — Монголын бартер платформ</title>
+<meta name="description" content="Машин, үл хөдлөх, бараа бүтээгдэхүүнээ мөнгөгүйгээр бартер солилцох Монголын платформ"/>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0%25' stop-color='%230ea5e9'/><stop offset='100%25' stop-color='%2310b981'/></linearGradient></defs><rect width='64' height='64' rx='14' fill='url(%23g)'/><text x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial Black' font-weight='900' font-size='38' fill='white'>B</text></svg>"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',system-ui,sans-serif;background:#f9fafb;color:#0a1b33;-webkit-font-smoothing:antialiased;padding-bottom:72px}
+@media(min-width:768px){body{padding-bottom:0}}
+button{cursor:pointer;font-family:inherit;border:none;background:none}
+input,textarea,select{font-family:inherit}
+svg{display:inline-block;vertical-align:middle;flex-shrink:0}
+a{text-decoration:none;color:inherit}
+:root{--brand:#0ea5e9;--dark:#0a152d;--dark2:#0f1f3d;--bg:#F5F5F5;--grad:linear-gradient(135deg,#0ea5e9,#10b981)}
+.wrap{max-width:88rem;margin:0 auto;padding:0 1.5rem}
+/* HERO */
+#hw{background:#f9fafb;padding:1.5rem 1rem 0}
+.hc{position:relative;width:100%;max-width:1400px;margin:0 auto;border-radius:48px;overflow:hidden;height:560px;background:#fff;border:1px solid rgba(148,163,184,.2);box-shadow:0 40px 100px -20px rgba(0,0,0,.05);display:flex;flex-direction:column}
+@media(min-width:768px){.hc{height:640px}}
+.hv{position:absolute;inset:0;z-index:0;overflow:hidden}
+.hv video{width:100%;height:100%;object-fit:cover;transform:scale(1.05)}
+.hbar{position:relative;z-index:3;display:flex;align-items:center;justify-content:space-between;padding:1.75rem 2rem 0}
+@media(min-width:768px){.hbar{padding:1.75rem 3.5rem 0}}
+.brand{display:inline-flex;align-items:center;gap:.5rem}
+.bico{width:36px;height:36px;border-radius:10px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:17px;color:#fff}
+.bname{font-weight:800;font-size:17px;color:var(--dark);letter-spacing:-.02em}
+.bname span{color:var(--brand)}
+.hbtns{display:none;gap:.5rem;align-items:center}
+@media(min-width:768px){.hbtns{display:flex}}
+.bgh{padding:.5rem 1.25rem;font-size:13px;font-weight:600;color:#475569;border-radius:999px}
+.bds{padding:.5rem 1.25rem;font-size:13px;font-weight:600;color:#fff;background:var(--dark);border-radius:999px}
+.hcon{position:relative;z-index:2;flex:1;padding:2.5rem 2rem 0;display:flex;flex-direction:column;align-items:flex-start}
+@media(min-width:768px){.hcon{padding:3rem 3.5rem 0}}
+.hbadge{display:inline-flex;align-items:center;gap:.4rem;background:rgba(255,255,255,.88);backdrop-filter:blur(8px);border:1px solid rgba(148,163,184,.4);border-radius:999px;padding:.375rem .875rem;font-size:11px;font-weight:700;color:var(--dark);margin-bottom:1rem}
+.hh1{font-family:'Outfit',sans-serif;font-size:clamp(2.4rem,7vw,4rem);font-weight:600;letter-spacing:-.03em;line-height:1.02;color:var(--dark)}
+.hsub{font-size:14px;color:#475569;line-height:1.65;max-width:420px;margin-top:1.25rem}
+.hrow{display:flex;flex-wrap:wrap;gap:.75rem;margin-top:2rem}
+.bp{display:inline-flex;align-items:center;gap:.625rem;background:var(--dark);color:#fff;font-size:13px;font-weight:700;border-radius:999px;padding:.5rem .5rem .5rem 1.5rem;border:none;cursor:pointer}
+.bs{display:inline-flex;align-items:center;background:rgba(255,255,255,.9);backdrop-filter:blur(8px);color:var(--dark);font-size:13px;font-weight:700;border-radius:999px;padding:.625rem 1.5rem;border:1px solid rgba(148,163,184,.5);cursor:pointer}
+.arr{background:#fff;border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.arrd{background:#000;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.arrsm{background:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.htrust{display:none;position:absolute;right:3.5rem;top:50%;transform:translateY(-50%);z-index:3;flex-direction:column;gap:1rem}
+@media(min-width:900px){.htrust{display:flex}}
+.tp{display:flex;align-items:center;gap:.5rem;background:rgba(255,255,255,.88);backdrop-filter:blur(8px);border:1px solid rgba(148,163,184,.5);border-radius:999px;padding:.375rem 1rem .375rem .625rem;font-size:11px;font-weight:700;color:var(--dark)}
+.hnav{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);z-index:4;display:flex;align-items:center;background:rgba(255,255,255,.92);backdrop-filter:blur(20px);border:1px solid rgba(148,163,184,.35);border-radius:999px;padding:.375rem;box-shadow:0 12px 40px rgba(0,0,0,.08);gap:.125rem;white-space:nowrap}
+.hnlogo{width:36px;height:36px;background:#fff;border:1px solid #e2e8f0;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--brand);font-size:14px;flex-shrink:0}
+.hnb{padding:.5rem .875rem;font-size:12px;font-weight:700;color:#64748b;border-radius:999px;border:none;cursor:pointer;background:none}
+.hncta{display:inline-flex;align-items:center;gap:.25rem;background:#fff;border:1px solid rgba(148,163,184,.5);border-radius:999px;padding:.5rem 1.25rem;font-size:12px;font-weight:700;color:var(--dark);cursor:pointer}
+/* MARQUEE */
+#mqw{background:#f9fafb;padding:2.5rem 0}
+.mqo{max-width:1400px;margin:0 auto;overflow:hidden;mask-image:linear-gradient(to right,transparent,black 8%,black 92%,transparent);-webkit-mask-image:linear-gradient(to right,transparent,black 8%,black 92%,transparent)}
+.mqt{display:flex;gap:1.25rem;width:max-content;animation:mqx 34s linear infinite}
+.mqt:hover{animation-play-state:paused}
+@keyframes mqx{from{transform:translateX(0)}to{transform:translateX(-33.333%)}}
+.mqc{height:96px;width:208px;flex-shrink:0;border-radius:999px;background:#fff;border:1px solid rgba(148,163,184,.45);display:flex;align-items:center;justify-content:center;gap:.625rem;font-weight:700;font-size:14px;color:var(--dark);transition:all .35s;cursor:pointer;padding:0 1.5rem}
+/* SEARCH */
+#ss{background:var(--bg);padding:4rem 1.5rem 2rem}
+.sbox{background:#fff;border-radius:24px;padding:1.25rem 1.75rem;border:1px solid rgba(148,163,184,.4);box-shadow:0 4px 30px rgba(0,0,0,.04)}
+.srow{display:flex;gap:.75rem;flex-wrap:wrap;margin-bottom:1rem}
+.sw{flex:1;min-width:180px;position:relative;display:flex;align-items:center}
+.sw svg{position:absolute;left:1.25rem;color:#94a3b8;pointer-events:none}
+.si{width:100%;background:#F5F5F5;border:none;border-radius:999px;padding:.875rem 1.25rem .875rem 3rem;font-size:14px;outline:none}
+.cr{display:flex;flex-wrap:wrap;gap:.5rem}
+.chip{padding:.375rem 1rem;border-radius:999px;font-size:12px;font-weight:600;background:#F5F5F5;color:#475569;cursor:pointer;border:none;transition:all .2s}
+.chip.on{background:var(--dark);color:#fff}
+/* MEET */
+#ms{background:var(--bg);padding:5rem 1.5rem}
+.mt2{display:grid;grid-template-columns:1fr;gap:3rem;margin-bottom:4rem;align-items:start}
+@media(min-width:768px){.mt2{grid-template-columns:1fr 1fr}}
+.st{font-size:clamp(2rem,4vw,3rem);font-weight:600;letter-spacing:-.03em;line-height:1.1;color:#000}
+.ssub{font-size:clamp(1.25rem,2.5vw,1.75rem);color:rgba(0,0,0,.6);line-height:1.5}
+.pb{display:inline-flex;align-items:center;gap:.625rem;background:var(--dark);color:#fff;font-size:.9375rem;font-weight:600;border-radius:999px;padding:.5rem .5rem .5rem 2rem;border:none;cursor:pointer;margin-top:2rem}
+.pb .arr{background:#fff;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center}
+.mc2{display:grid;grid-template-columns:1fr;gap:1rem}
+@media(min-width:640px){.mc2{grid-template-columns:1fr 1fr}}
+@media(min-width:1024px){.mc2{grid-template-columns:2fr 1fr 1fr}}
+.mcard{border-radius:16px;padding:1.75rem;min-height:320px;display:flex;flex-direction:column;justify-content:space-between}
+.mcard h3{font-size:1.4rem;font-weight:600;letter-spacing:-.02em;line-height:1.2;margin-bottom:.5rem}
+.mcard p{font-size:.875rem;line-height:1.6}
+.mbr{background:var(--grad)}.mbr h3,.mbr p{color:rgba(255,255,255,.92)}
+.mdk{background:var(--dark2)}.mdk h3{color:#fff}.mdk p{color:rgba(255,255,255,.5)}
+/* CAT GRID */
+#cgs{background:var(--bg);padding:4rem 1.5rem}
+.ey{font-size:.8125rem;color:rgba(0,0,0,.55);margin-bottom:.5rem}
+.cg{display:grid;grid-template-columns:repeat(2,1fr);gap:.75rem}
+@media(min-width:640px){.cg{grid-template-columns:repeat(3,1fr)}}
+@media(min-width:1024px){.cg{grid-template-columns:repeat(6,1fr)}}
+.cc{background:#fff;border-radius:16px;padding:1.25rem;border:1px solid rgba(148,163,184,.4);cursor:pointer;text-align:left;transition:all .25s;width:100%}
+.cc:hover{background:var(--dark2);border-color:var(--dark2)}
+.ci{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:.75rem}
+.cn{font-weight:700;font-size:15px;color:var(--dark);margin-bottom:.25rem;transition:color .25s}
+.cd{font-size:12px;color:#64748b;line-height:1.5;transition:color .25s}
+.cc:hover .cn,.cc:hover .cd{color:#fff}
+/* LISTINGS */
+#ls{background:var(--bg);padding:4rem 1.5rem}
+.lh{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;margin-bottom:2.5rem;gap:1rem}
+.sa{font-size:13px;font-weight:700;color:var(--dark);display:inline-flex;align-items:center;gap:.25rem}
+.lg{display:grid;grid-template-columns:1fr;gap:1rem}
+@media(min-width:640px){.lg{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:1024px){.lg{grid-template-columns:repeat(4,1fr)}}
+.lcard{background:#fff;border-radius:16px;overflow:hidden;border:1px solid rgba(148,163,184,.4);cursor:pointer;transition:transform .25s,box-shadow .25s}
+.lcard:hover{transform:translateY(-4px);box-shadow:0 20px 50px -12px rgba(0,0,0,.12)}
+.lt{height:176px;display:flex;align-items:center;justify-content:center;position:relative}
+.lt svg{width:56px;height:56px;color:rgba(255,255,255,.9)}
+.lba{position:absolute;top:.75rem;left:.75rem;display:flex;gap:.375rem;flex-wrap:wrap}
+.bok{background:rgba(255,255,255,.95);color:#059669;font-size:10px;font-weight:700;padding:.25rem .5rem;border-radius:6px;display:inline-flex;align-items:center;gap:.2rem}
+.bpr{background:#f59e0b;color:#fff;font-size:10px;font-weight:800;padding:.25rem .625rem;border-radius:6px;display:inline-flex;align-items:center;gap:.2rem}
+.lbody{padding:1rem}
+.ltit{font-weight:700;font-size:15px;color:var(--dark);margin-bottom:.375rem;line-height:1.3}
+.lval{font-size:14px;font-weight:700;color:var(--brand);margin-bottom:.375rem}
+.lbar{font-size:12px;color:#64748b;margin-bottom:.5rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lmet{display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem}
+.lloc{font-size:11px;color:#94a3b8;display:inline-flex;align-items:center;gap:.25rem}
+.lcon{font-size:10px;color:#64748b;background:#f1f5f9;padding:.25rem .625rem;border-radius:6px}
+.obtn{width:100%;background:var(--dark);color:#fff;font-size:13px;font-weight:700;border-radius:999px;padding:.625rem;border:none;cursor:pointer}
+/* PREMIUM */
+#ps{background:var(--bg);padding:4rem 1.5rem}
+.pbdg{display:inline-flex;align-items:center;gap:.4rem;background:#fffbeb;border:1px solid #fcd34d;border-radius:999px;padding:.25rem .875rem;margin-bottom:.75rem;font-size:11px;font-weight:700;color:#d97706}
+.pg{display:grid;grid-template-columns:1fr;gap:1.25rem;margin-top:2rem}
+@media(min-width:768px){.pg{grid-template-columns:repeat(3,1fr)}}
+.pcard{background:#fff;border-radius:16px;overflow:hidden;border:2px solid #fcd34d;cursor:pointer;transition:transform .25s,box-shadow .25s}
+.pcard:hover{transform:translateY(-4px);box-shadow:0 20px 50px -12px rgba(245,158,11,.25)}
+.ptmb{height:208px;display:flex;align-items:center;justify-content:center;position:relative}
+.ptmb svg{width:80px;height:80px;color:rgba(255,255,255,.9)}
+.pbody{padding:1.25rem}
+.ptit{font-weight:700;font-size:18px;color:var(--dark);margin-bottom:.5rem}
+.pval{font-size:15px;font-weight:700;color:var(--brand);margin-bottom:.375rem}
+.pbar{font-size:13px;color:#64748b;margin-bottom:.375rem}
+.ploc{font-size:12px;color:#94a3b8;display:inline-flex;align-items:center;gap:.25rem;margin-bottom:1rem}
+.pbtn{width:100%;display:inline-flex;align-items:center;justify-content:center;gap:.5rem;background:var(--dark);color:#fff;font-size:13px;font-weight:700;border-radius:999px;padding:.5rem .5rem .5rem 1.5rem;border:none;cursor:pointer}
+/* BACKERS */
+#bks{background:var(--bg);padding:3rem 1.5rem}
+.bkg{display:grid;grid-template-columns:1fr;gap:2rem;align-items:center}
+@media(min-width:768px){.bkg{grid-template-columns:1fr 3fr}}
+.bkt{font-size:.9375rem;color:rgba(0,0,0,.6);line-height:1.6}
+.bko{overflow:hidden;mask-image:linear-gradient(to right,transparent,black 5%,black 95%,transparent);-webkit-mask-image:linear-gradient(to right,transparent,black 5%,black 95%,transparent)}
+.bktr{display:flex;align-items:center;width:max-content;animation:bkx 30s linear infinite}
+@keyframes bkx{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.bki{padding:.75rem 2.5rem;flex-shrink:0;color:rgba(0,0,0,.45);white-space:nowrap}
+/* USE CASES */
+#ucs{background:var(--bg);padding:5rem 1.5rem}
+.ucg{display:grid;grid-template-columns:1fr;gap:2rem;align-items:start}
+@media(min-width:768px){.ucg{grid-template-columns:1fr 1fr}}
+.ucl{padding-right:0}
+@media(min-width:768px){.ucl{padding-right:3rem;padding-top:.5rem}}
+.uct{font-size:clamp(2.5rem,5vw,3.5rem);font-weight:600;letter-spacing:-.04em;line-height:1;margin-bottom:1.5rem;color:#000}
+.ucd{font-size:.9375rem;color:rgba(0,0,0,.55);line-height:1.65;max-width:340px;margin-bottom:2rem}
+.ucp{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;max-width:420px}
+.ucpa{background:#fff;border-radius:16px;padding:1rem;border:1px solid rgba(148,163,184,.4)}
+.ucpi{display:flex;align-items:center;gap:.5rem;margin-bottom:.5rem}
+.ucic{width:32px;height:32px;border-radius:10px;background:#F5F5F5;display:flex;align-items:center;justify-content:center}
+.ucic svg{width:16px;height:16px;color:var(--dark)}
+.ucpf{font-size:12px;font-weight:700;color:var(--dark)}
+.ucpt{font-size:11px;color:#64748b}
+.ucr{position:relative;border-radius:24px;overflow:hidden;min-height:640px}
+.ucr video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.ucov{position:relative;z-index:1;padding:2.5rem 3rem}
+.ucov h3{font-size:clamp(2rem,4vw,3rem);font-weight:600;letter-spacing:-.03em;line-height:1.1;color:#000;margin-bottom:1.25rem}
+.ucov p{font-size:.9375rem;color:rgba(0,0,0,.65);max-width:400px;margin-bottom:2rem;line-height:1.65}
+.ucln{display:inline-flex;align-items:center;gap:.75rem;font-weight:600;color:#000}
+.ucci{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.8);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center}
+/* HOW */
+#hs{background:var(--bg);padding:5rem 1.5rem}
+.hctr{text-align:center;margin-bottom:4rem}
+.hgr{display:grid;grid-template-columns:1fr;gap:1rem}
+@media(min-width:640px){.hgr{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:1024px){.hgr{grid-template-columns:repeat(4,1fr)}}
+.hwc{background:#fff;border-radius:16px;padding:1.75rem;border:1px solid rgba(148,163,184,.4)}
+.hwn{font-size:4.25rem;font-weight:600;color:#e2e8f0;letter-spacing:-.04em;line-height:1;margin-bottom:.5rem}
+.hwc h3{font-weight:700;font-size:1.125rem;color:var(--dark);margin-bottom:.5rem}
+.hwc p{font-size:.8125rem;color:#64748b;line-height:1.6}
+/* SAFETY */
+#sfs{background:var(--bg);padding:5rem 1.5rem}
+.sfg{display:grid;grid-template-columns:1fr;gap:3rem;align-items:start}
+@media(min-width:768px){.sfg{grid-template-columns:1fr 1fr}}
+.sfts{display:flex;flex-direction:column;gap:.75rem;margin-top:2rem}
+.sft{display:flex;gap:.75rem;align-items:flex-start;background:#fff;border-radius:16px;padding:1rem;border:1px solid rgba(148,163,184,.4)}
+.sfic{width:36px;height:36px;border-radius:12px;background:#fffbeb;border:1px solid #fcd34d;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sfic svg{width:16px;height:16px;color:#d97706}
+.sft span{font-size:.875rem;color:var(--dark);line-height:1.6;padding-top:.25rem}
+.tbx{background:var(--dark2);border-radius:24px;padding:2.5rem}
+.tbx h3{color:#fff;font-size:1.5rem;font-weight:600;letter-spacing:-.02em;margin-bottom:.5rem}
+.tbx>p{color:rgba(255,255,255,.5);font-size:.875rem;margin-bottom:2rem}
+.tits{display:flex;flex-direction:column;gap:1rem}
+.tit{display:flex;align-items:center;gap:1rem}
+.tic{width:44px;height:44px;border-radius:12px;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.tic svg{width:20px;height:20px;color:#fff}
+.til{font-weight:700;font-size:14px;color:#fff}
+.tis{font-size:12px;color:rgba(255,255,255,.4)}
+/* CTA */
+#cs{background:var(--bg);padding:4rem 1.5rem 5rem}
+.cb{max-width:88rem;margin:0 auto;background:var(--dark);border-radius:24px;padding:4rem 2rem;text-align:center;position:relative;overflow:hidden}
+.cb::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 30% 50%,rgba(14,165,233,.35),transparent 50%),radial-gradient(circle at 70% 50%,rgba(16,185,129,.3),transparent 50%);pointer-events:none}
+.cb h2{position:relative;font-size:clamp(2rem,5vw,3.5rem);font-weight:600;letter-spacing:-.03em;line-height:1.1;color:#fff;margin-bottom:1.25rem}
+.cb p{position:relative;font-size:1rem;color:rgba(255,255,255,.65);max-width:500px;margin:0 auto 2.5rem}
+.cbtn{position:relative;display:inline-flex;align-items:center;gap:.75rem;background:#fff;color:#000;font-size:.9375rem;font-weight:700;border-radius:999px;padding:.5rem .5rem .5rem 2rem;border:none;cursor:pointer}
+/* FOOTER */
+footer{background:var(--dark);color:rgba(255,255,255,.6);padding:5rem 1.5rem 2rem}
+.fg{max-width:88rem;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:2.5rem;margin-bottom:3rem}
+@media(min-width:768px){.fg{grid-template-columns:2fr 1fr 1fr 1fr}}
+.fb p{font-size:.8125rem;margin-top:1rem;line-height:1.7;color:rgba(255,255,255,.5)}
+.fc h4{color:#fff;font-weight:700;font-size:.875rem;margin-bottom:1rem}
+.fc a{display:block;font-size:.8125rem;margin-bottom:.625rem;color:rgba(255,255,255,.55)}
+.fbot{max-width:88rem;margin:0 auto;border-top:1px solid rgba(255,255,255,.08);padding-top:2rem;text-align:center;font-size:.75rem;color:rgba(255,255,255,.3)}
+/* MOBILE NAV */
+#mn{display:flex;position:fixed;bottom:0;left:0;right:0;z-index:100;background:#fff;border-top:1px solid rgba(148,163,184,.4);padding-bottom:env(safe-area-inset-bottom)}
+@media(min-width:768px){#mn{display:none}}
+.mni{flex:1;display:flex;flex-direction:column;align-items:center;gap:.25rem;padding:.625rem .5rem;font-size:10px;font-weight:700;color:#94a3b8;border:none;background:none;cursor:pointer}
+.mni.on,.mni:hover{color:var(--brand)}
+.mni svg{width:20px;height:20px}
+.mnar{background:var(--grad);border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center}
+.mnar svg{color:#fff}
+/* MODALS */
+.ov{display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.5);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:1rem}
+.ov.open{display:flex}
+.modal{background:#fff;border-radius:24px;max-width:480px;width:100%;max-height:90vh;overflow-y:auto;position:relative;animation:mIn .25s ease}
+@keyframes mIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
+.mx{position:absolute;top:1.25rem;right:1.25rem;width:32px;height:32px;border-radius:50%;background:none;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#64748b}
+.mx:hover{background:#f1f5f9}
+.mb{padding:1.75rem}
+.mttl{font-size:1.25rem;font-weight:700;color:var(--dark);letter-spacing:-.02em;margin-bottom:.25rem}
+.msub{font-size:.8125rem;color:#64748b;margin-bottom:1.5rem}
+.ff{margin-bottom:1rem}
+.ff label{display:block;font-size:.8125rem;font-weight:700;color:var(--dark);margin-bottom:.375rem}
+.ff input,.ff textarea,.ff select{width:100%;border:1px solid #e2e8f0;border-radius:12px;padding:.75rem 1rem;font-size:.875rem;outline:none;font-family:inherit;resize:none;background:#fff;transition:border-color .2s}
+.ff input:focus,.ff textarea:focus,.ff select:focus{border-color:var(--dark)}
+.fck{display:flex;align-items:center;gap:.5rem;font-size:.875rem;font-weight:500;cursor:pointer;margin-bottom:1rem}
+.fck input{accent-color:var(--dark)}
+.msub2{width:100%;display:inline-flex;align-items:center;justify-content:center;gap:.625rem;background:var(--dark);color:#fff;font-size:.875rem;font-weight:700;border-radius:999px;padding:.625rem .625rem .625rem 1.75rem;margin-top:.5rem;border:none;cursor:pointer}
+.suc{text-align:center;padding:3rem 1.75rem}
+.sico{width:64px;height:64px;border-radius:16px;background:#f0fdf4;border:1px solid #bbf7d0;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem}
+.sico svg{width:28px;height:28px;color:#16a34a}
+.stit{font-size:1.25rem;font-weight:700;color:var(--dark);margin-bottom:.5rem}
+.sdsc{font-size:.875rem;color:#64748b;margin-bottom:1.5rem}
+.scls{background:var(--dark);color:#fff;font-size:.875rem;font-weight:700;border-radius:999px;padding:.75rem 2rem;border:none;cursor:pointer}
+/* WIZARD */
+.wp{display:flex;gap:.375rem;margin-bottom:1.5rem}
+.ws{flex:1;height:4px;border-radius:2px;background:#e2e8f0;transition:background .3s}
+.ws.dn{background:var(--dark)}
+.wcs{display:grid;grid-template-columns:1fr 1fr;gap:.625rem}
+.wc{text-align:left;border-radius:16px;padding:1rem;border:2px solid #e2e8f0;background:#fff;cursor:pointer;transition:all .2s;width:100%}
+.wc.sl{background:var(--dark);border-color:var(--dark)}
+.wc.sl .wn{color:#fff}
+.wcic{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:.5rem}
+.wcic svg{width:16px;height:16px;color:#fff}
+.wn{font-weight:700;font-size:.875rem;color:var(--dark);transition:color .2s}
+.upl{border:2px dashed #cbd5e1;border-radius:16px;padding:2.5rem;text-align:center;cursor:pointer;background:#f8fafc;margin-bottom:.75rem}
+.upl svg{width:40px;height:40px;color:#94a3b8;display:block;margin:0 auto .5rem}
+.ut{font-weight:700;font-size:.875rem;color:var(--dark)}
+.us{font-size:.75rem;color:#94a3b8;margin-top:.25rem}
+.ei{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem}
+.esl{border:2px dashed #e2e8f0;border-radius:12px;padding:1.25rem;text-align:center;color:#94a3b8;font-size:1.5rem;cursor:pointer}
+.cbs{display:flex;gap:.625rem}
+.cb2{flex:1;border-radius:12px;padding:.75rem;font-weight:700;font-size:.875rem;border:2px solid #e2e8f0;background:#fff;cursor:pointer;transition:all .2s}
+.cb2.sl{background:var(--dark);border-color:var(--dark);color:#fff}
+.bts{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1rem}
+.btc{padding:.375rem 1rem;border-radius:999px;font-size:.75rem;font-weight:600;background:#F5F5F5;color:#475569;cursor:pointer;border:none;transition:all .2s}
+.btc.sl{background:var(--dark);color:#fff}
+.wft{display:flex;gap:.625rem;margin-top:1.5rem}
+.wbk{flex:1;background:#f1f5f9;color:var(--dark);font-size:.875rem;font-weight:700;border-radius:999px;padding:.75rem;border:none;cursor:pointer}
+.wnx{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:.5rem;background:var(--dark);color:#fff;font-size:.875rem;font-weight:700;border-radius:999px;padding:.625rem .625rem .625rem 1.5rem;border:none;cursor:pointer}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div id="hw">
+<div class="hc">
+  <div class="hv">
+    <video autoplay loop muted playsinline>
+      <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260505_101331_74f9b798-3f00-4e86-8a01-377aa16ffeaa.mp4" type="video/mp4"/>
+    </video>
+  </div>
+  <div class="hbar">
+    <div class="brand"><div class="bico">B</div><span class="bname">barter<span>9911</span>.mn</span></div>
+    <div class="hbtns">
+      <button class="bgh" onclick="openW()">Нэвтрэх</button>
+      <button class="bds" onclick="openW()">Бүртгүүлэх</button>
+    </div>
+  </div>
+  <div class="hcon">
+    <div class="hbadge">✦ Монголын №1 бартер платформ</div>
+    <h1 class="hh1">Мөнгөгүйгээр<br/>үнэ цэнээ солилц</h1>
+    <p class="hsub">Машин, үл хөдлөх, бараа бүтээгдэхүүнээ мөнгөгүйгээр бартер солилцох Монголын платформ.</p>
+    <div class="hrow">
+      <button class="bp" onclick="openW()">Зар нэмэх
+        <span class="arr"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+      </button>
+      <button class="bs" onclick="g('ls')">Санал хайх</button>
+    </div>
+  </div>
+  <div class="htrust">
+    <div class="tp"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>Баталгаажсан зар</div>
+    <div class="tp"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>Утас баталгаажсан</div>
+    <div class="tp"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Аюулгүй зөвлөмж</div>
+  </div>
+  <div class="hnav">
+    <div class="hnlogo">✦</div>
+    <button class="hnb" onclick="g('cgs')">Категори</button>
+    <button class="hnb" onclick="g('ls')">Саналууд</button>
+    <button class="hnb" onclick="g('sfs')" id="hnsf" style="display:none">Аюулгүй</button>
+    <button class="hncta" onclick="openW()">Нэвтрэх<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg></button>
+  </div>
+</div>
+</div>
+
+<!-- MARQUEE -->
+<div id="mqw"><div class="mqo"><div class="mqt" id="mqt"></div></div></div>
+
+<!-- SEARCH -->
+<section id="ss">
+<div class="wrap">
+  <div class="sbox">
+    <div class="srow">
+      <div class="sw">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        <input class="si" placeholder="Юу хайж байна?"/>
+      </div>
+      <button class="bp" style="font-size:13px">Хайх
+        <span class="arr"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+      </button>
+    </div>
+    <div class="cr" id="cr"></div>
+  </div>
+</div>
+</section>
+
+<!-- MEET -->
+<section id="ms">
+<div class="wrap">
+  <div class="mt2">
+    <div>
+      <h2 class="st">barter9911-ийг танилц.</h2>
+      <button class="pb" onclick="openW()">Дэлгэрэнгүй
+        <span class="arr"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+      </button>
+    </div>
+    <p class="ssub">barter9911 бол барааны үнэ цэнийг хадгалж, мөнгөн урсгалгүйгээр найдвартай солилцох Монголын анхдагч платформ.</p>
+  </div>
+  <div class="mc2">
+    <div class="mcard mbr"><h3>Үнэ цэн<br/>хадгалах бартер</h3><p>Мөнгөгүйгээр хэрэгцээтэй зүйлдээ солилцож, мөнгөн алдагдалгүйгээр үнэ цэнээ хадгал.</p></div>
+    <div class="mcard mdk"><h3>Баталгаажсан,<br/>найдвартай.</h3><p>Утас, имэйл, Facebook баталгаажсан хэрэглэгчид. Премиум зар админ шалгасан.</p></div>
+    <div class="mcard mdk"><h3>Бүхэн<br/>бартер боломж</h3><p>Машин, байр, electronics, үйлчилгээ — бүх төрлийн бараа cash хосолж бартер хийгдэнэ.</p></div>
+  </div>
+</div>
+</section>
+
+<!-- CAT GRID -->
+<section id="cgs">
+<div class="wrap">
+  <div style="margin-bottom:2.5rem"><div class="ey">Барааны ангиллууд</div><h2 class="st">Категори</h2></div>
+  <div class="cg" id="cgrid"></div>
+</div>
+</section>
+
+<!-- LISTINGS -->
+<section id="ls">
+<div class="wrap">
+  <div class="lh">
+    <div><div class="ey">Сүүлийн үеийн бартер</div><h2 class="st">Шинэ саналууд</h2></div>
+    <a class="sa" href="#">Бүгдийг харах<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg></a>
+  </div>
+  <div class="lg" id="lgrid"></div>
+</div>
+</section>
+
+<!-- PREMIUM -->
+<section id="ps">
+<div class="wrap">
+  <div class="pbdg"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Админ баталгаажсан</div>
+  <h2 class="st">Premium саналууд</h2>
+  <div class="pg" id="pgrid"></div>
+</div>
+</section>
+
+<!-- BACKERS -->
+<section id="bks">
+<div class="wrap">
+  <div class="bkg">
+    <p class="bkt">Монголын тэргүүлэх<br/>хамтрагчдын дэмжлэгтэй.</p>
+    <div class="bko"><div class="bktr" id="bktr"></div></div>
+  </div>
+</div>
+</section>
+
+<!-- USE CASES -->
+<section id="ucs">
+<div class="wrap">
+  <div class="ucg">
+    <div class="ucl">
+      <div class="ey">barter9911 Practice</div>
+      <h2 class="uct">Юу солилцох<br/>боломжтой вэ?</h2>
+      <p class="ucd">Машин, үл хөдлөх, electronics, бизнес тоноглол, үйлчилгээ — бараа бүхэн өөр өөр төрөл рүү бартер хийгдэх боломжтой.</p>
+      <div class="ucp" id="ucp"></div>
+    </div>
+    <div class="ucr">
+      <video autoplay loop muted playsinline><source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260423_183428_ab5e672a-f608-4dcb-b319-f3e040f02e2d.mp4" type="video/mp4"/></video>
+      <div class="ucov">
+        <h3>Автомашин<br/>солилцоо</h3>
+        <p>Машинаа байрны урьдчилгаа, бизнес тоноглол эсвэл cash хосолсон бартер саналаар сольж, илүү шаардлагатай зүйлдээ хувирга.</p>
+        <a class="ucln" href="#ls"><span class="ucci"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>Машинуудыг харах</a>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- HOW -->
+<section id="hs">
+<div class="wrap">
+  <div class="hctr"><div class="ey">Хэрхэн ажиллах</div><h2 class="st">4 энгийн алхам</h2></div>
+  <div class="hgr">
+    <div class="hwc"><div class="hwn">01</div><h3>Зар оруулна</h3><p>Өөрийн машин, байр, бараа эсвэл үйлчилгээгээ үнэлгээтэйгээр оруулна.</p></div>
+    <div class="hwc"><div class="hwn">02</div><h3>Санал авна</h3><p>Бусад хэрэглэгч таны бараанд өөрийн бартер саналаа илгээнэ.</p></div>
+    <div class="hwc"><div class="hwn">03</div><h3>Тохиролцоно</h3><p>Үнэлгээ, cash нэмэлт, нөхцөлөө харилцан тохиролцоно.</p></div>
+    <div class="hwc"><div class="hwn">04</div><h3>Солилцоно</h3><p>Аюулгүй байдлын зөвлөмжийн дагуу солилцоогоо хийж дуусгана.</p></div>
+  </div>
+</div>
+</section>
+
+<!-- SAFETY -->
+<section id="sfs">
+<div class="wrap">
+  <div class="sfg">
+    <div>
+      <div class="ey">Аюулгүй бартер</div>
+      <h2 class="st">Аюулгүй<br/>хийх зөвлөмж</h2>
+      <div class="sfts">
+        <div class="sft"><div class="sfic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div><span>Урьдчилгаа мөнгө шилжүүлэхээс болгоомжил.</span></div>
+        <div class="sft"><div class="sfic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div><span>Бараагаа заавал биечлэн шалга.</span></div>
+        <div class="sft"><div class="sfic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div><span>Гэрээ эсвэл бичгээр тохиролцоо хий.</span></div>
+        <div class="sft"><div class="sfic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div><span>Сэжигтэй зар байвал report хийнэ үү.</span></div>
+        <div class="sft"><div class="sfic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div><span>Өндөр үнэлгээтэй бартер дээр бичиг баримтаа шалгаарай.</span></div>
+      </div>
+    </div>
+    <div class="tbx">
+      <h3>Итгэлцлийн тэмдэгүүд</h3>
+      <p>Платформ дээрх итгэлцлийг хангах хамгаалалт.</p>
+      <div class="tits">
+        <div class="tit"><div class="tic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg></div><div><div class="til">Баталгаажсан хэрэглэгч</div><div class="tis">Утас, имэйл баталгаажсан</div></div></div>
+        <div class="tit"><div class="tic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg></div><div><div class="til">Утас баталгаажсан</div><div class="tis">Жинхэнэ хэрэглэгч гэдгийг батлан</div></div></div>
+        <div class="tit"><div class="tic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><div><div class="til">Аюулгүй платформ</div><div class="tis">Нийгмийн сүлжээгээр баталгаажсан</div></div></div>
+        <div class="tit"><div class="tic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div><div><div class="til">Админ шалгасан зар</div><div class="tis">Premium зарын шалгалт</div></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- CTA -->
+<section id="cs">
+<div class="cb">
+  <h2>Өнөөдөр бартер<br/>саналаа оруул</h2>
+  <p>Мөнгөгүй байсан ч үнэ цэнтэй зүйлээ илүү хэрэгтэй зүйлээр сольж болно.</p>
+  <button class="cbtn" onclick="openW()">Зар нэмэх
+    <span class="arrd"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+  </button>
+</div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+<div class="fg">
+  <div class="fb"><div class="brand"><div class="bico">B</div><span class="bname">barter<span>9911</span>.mn</span></div><p>Монголын бартер солилцооны платформ. Мөнгөгүйгээр үнэ цэнтэй зүйлсээ солилц.</p></div>
+  <div class="fc"><h4>Категори</h4><a href="#">Автомашин</a><a href="#">Үл хөдлөх</a><a href="#">Electronics</a><a href="#">Үйлчилгээ</a></div>
+  <div class="fc"><h4>Аюулгүй байдал</h4><a href="#">Зөвлөмж</a><a href="#">Баталгаажуулалт</a><a href="#">Нөхцөл</a></div>
+  <div class="fc"><h4>Холбоо барих</h4><a href="#">📞 7711-9911</a><a href="#">📧 info@barter9911.mn</a><a href="#">Facebook</a></div>
+</div>
+<div class="fbot">© 2026 barter9911.mn — Монголын бартер солилцооны платформ</div>
+</footer>
+
+<!-- MOBILE NAV -->
+<nav id="mn">
+  <button class="mni on" onclick="g('hw')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>Нүүр</span></button>
+  <button class="mni" onclick="g('ls')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg><span>Хайх</span></button>
+  <button class="mni" onclick="openW()"><div class="mnar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div><span>Нэмэх</span></button>
+  <button class="mni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg><span>Чат</span></button>
+  <button class="mni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>Профайл</span></button>
+</nav>
+
+<!-- OFFER MODAL -->
+<div class="ov" id="om">
+<div class="modal">
+  <button class="mx" onclick="cl('om')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+  <div class="mb" id="of">
+    <div class="mttl">Бартер санал илгээх</div>
+    <div class="msub" id="osub">Зарын мэдээлэл</div>
+    <div class="ff"><label>Санал болгож буй зүйл</label><input placeholder="Жишээ: Toyota Camry 2018"/></div>
+    <div class="ff"><label>Үнэлгээ (₮)</label><input placeholder="28,000,000"/></div>
+    <label class="fck"><input type="checkbox"/> Cash нэмэх боломжтой</label>
+    <div class="ff"><label>Утас</label><input placeholder="9911XXXX"/></div>
+    <div class="ff"><label>Тайлбар</label><textarea rows="3" placeholder="Нэмэлт мэдээлэл..."></textarea></div>
+    <button class="msub2" onclick="ss('of','od')">Санал илгээх<span class="arrsm"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span></button>
+  </div>
+  <div class="suc" id="od" style="display:none">
+    <div class="sico"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg></div>
+    <div class="stit">Санал илгээгдлээ</div>
+    <div class="sdsc">Зар эзэмшигч тантай удахгүй холбогдоно.</div>
+    <button class="scls" onclick="cl('om')">Хаах</button>
+  </div>
+</div>
+</div>
+
+<!-- WIZARD MODAL -->
+<div class="ov" id="wm">
+<div class="modal">
+  <button class="mx" onclick="cl('wm')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+  <div class="mb" id="wf">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem">
+      <div class="mttl">Зар нэмэх</div>
+      <span style="font-size:12px;font-weight:700;color:#64748b" id="wlbl">Алхам 1/5</span>
+    </div>
+    <div class="wp" id="wp"></div>
+    <div id="wcon"></div>
+    <div class="wft" id="wft"></div>
+  </div>
+  <div class="suc" id="wd" style="display:none">
+    <div class="sico"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg></div>
+    <div class="stit">Зар нийтлэгдлээ</div>
+    <div class="sdsc">Таны зар бусад хэрэглэгчид удахгүй харагдаж эхэлнэ.</div>
+    <button class="scls" onclick="cl('wm')">Хаах</button>
+  </div>
+</div>
+</div>
+
+<script>
+// ── SVG PATHS ──
+const P={
+  arrow:'<path d="M5 12h14M12 5l7 7-7 7"/>',
+  check:'<path d="M20 6L9 17l-5-5"/>',
+  car:'<path d="M5 17H3a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v7a2 2 0 01-2 2h-2"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/>',
+  home:'<path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>',
+  brief:'<rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/>',
+  phone:'<rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/>',
+  wrench:'<path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/>',
+  pkg:'<line x1="16.5" y1="9.4" x2="7.5" y2="4.21"/><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/>',
+  pin:'<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/>',
+  star:'<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>',
+  img:'<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>',
+};
+const S=(k,sz=16,col='currentColor')=>`<svg width="${sz}" height="${sz}" viewBox="0 0 24 24" fill="none" stroke="${col}" stroke-width="2">${P[k]||''}</svg>`;
+const A=(col='#000')=>`<span class="arrsm"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="${col}" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>`;
+
+// ── DATA ──
+const CATS=[
+  {n:'Автомашин',d:'Машин ↔ машин, байрны урьдчилгаа',k:'car',g:'linear-gradient(135deg,#0ea5e9,#1d4ed8)'},
+  {n:'Үл хөдлөх',d:'Байр, газар, хаус',k:'home',g:'linear-gradient(135deg,#8b5cf6,#ec4899)'},
+  {n:'Бизнес тоног',d:'Кофе машин, gym, компьютер',k:'brief',g:'linear-gradient(135deg,#f59e0b,#ef4444)'},
+  {n:'Electronics',d:'iPhone, laptop, tablet',k:'phone',g:'linear-gradient(135deg,#10b981,#0ea5e9)'},
+  {n:'Үйлчилгээ',d:'Маркетинг, засвар, сургалт',k:'wrench',g:'linear-gradient(135deg,#ec4899,#8b5cf6)'},
+  {n:'Бусад бараа',d:'Тавилга, хувцас, бүтээгдэхүүн',k:'pkg',g:'linear-gradient(135deg,#6366f1,#0ea5e9)'},
+];
+const LIS=[
+  {id:1,t:'Toyota Prius 30',v:'28 сая ₮',b:'Байрны урьдчилгаа / iPhone / cash',l:'УБ, БЗД',k:'car',c:'Хуучин',ok:true,g:'linear-gradient(135deg,#0ea5e9,#6366f1)'},
+  {id:2,t:'2 өрөө байр, Хан-Уул',v:'180 сая ₮',b:'Автомашин + cash / газар',l:'УБ, Хан-Уул',k:'home',c:'Шинэ',ok:true,g:'linear-gradient(135deg,#8b5cf6,#ec4899)'},
+  {id:3,t:'iPhone 15 Pro Max 256GB',v:'4.2 сая ₮',b:'Laptop / Samsung + cash',l:'УБ, СБД',k:'phone',c:'Шинэ',ok:true,g:'linear-gradient(135deg,#10b981,#0ea5e9)'},
+  {id:4,t:'Кофе машин La Marzocco',v:'12 сая ₮',b:'Автомашин / electronics',l:'УБ, ЧД',k:'brief',c:'Хуучин',ok:false,g:'linear-gradient(135deg,#f59e0b,#ef4444)'},
+  {id:5,t:'Gym equipment бүрэн сет',v:'35 сая ₮',b:'Автомашин / байр урьдчилгаа',l:'УБ, БГД',k:'brief',c:'Хуучин',ok:true,g:'linear-gradient(135deg,#ef4444,#f59e0b)'},
+  {id:6,t:'Маркетинг үйлчилгээ багц',v:'5 сая ₮',b:'Electronics / бараа бүтээгдэхүүн',l:'УБ, СБД',k:'wrench',c:'Шинэ',ok:true,g:'linear-gradient(135deg,#ec4899,#8b5cf6)'},
+  {id:7,t:'Оффис тавилга бүрэн сет',v:'8 сая ₮',b:'Электроник / автомашин',l:'УБ, ЧД',k:'pkg',c:'Хуучин',ok:false,g:'linear-gradient(135deg,#6366f1,#0ea5e9)'},
+  {id:8,t:'Gaming PC RTX 4080',v:'7.5 сая ₮',b:'MacBook / iPhone + cash',l:'УБ, БЗД',k:'phone',c:'Шинэ',ok:true,g:'linear-gradient(135deg,#10b981,#6366f1)'},
+];
+const PREM=[
+  {id:101,t:'Lexus RX 450h',v:'85 сая ₮',b:'Байр / газар + cash',l:'УБ, СБД',k:'car',g:'linear-gradient(135deg,#f59e0b,#ef4444)'},
+  {id:102,t:'Хан-Уул 2 өрөө байр',v:'220 сая ₮',b:'Автомашин + cash / бизнес тоноглол',l:'УБ, Хан-Уул',k:'home',g:'linear-gradient(135deg,#8b5cf6,#0ea5e9)'},
+  {id:103,t:'Кофе шоп тоноглол',v:'45 сая ₮',b:'Автомашин / байр урьдчилгаа',l:'УБ, БГД',k:'brief',g:'linear-gradient(135deg,#10b981,#f59e0b)'},
+];
+const BKS=[
+  {n:'MOST.MN',s:'font-family:"Times New Roman",serif;font-size:14px'},
+  {n:'UNITEL',s:'font-family:"Arial Black",sans-serif;font-weight:900;font-size:16px;letter-spacing:.08em'},
+  {n:'MOBICOM',s:'font-family:Impact,sans-serif;font-size:18px'},
+  {n:'Khan Bank',s:'font-family:Georgia,serif;font-weight:600;font-size:17px'},
+  {n:'Golomt',s:'font-family:Helvetica,sans-serif;font-weight:700;font-size:15px'},
+  {n:'BLOOMBERG.MN',s:'font-family:Verdana,sans-serif;font-weight:700;font-size:13px;text-transform:uppercase'},
+  {n:'TOP.MN',s:'font-family:"Courier New",monospace;font-weight:700;letter-spacing:.18em;font-size:13px'},
+  {n:'Baga.mn',s:'font-family:Palatino,serif;font-size:15px'},
+];
+const CHP=['Категори','Үнийн хэмжээ','Байршил','Бартер төрөл','Cash нэмэх','Шинэ/Хуучин','Баталгаажсан'];
+const BT=['Автомашин','Үл хөдлөх','Electronics','Үйлчилгээ','Cash хосолно','Юу ч болно'];
+const UCP=[
+  {f:'Машин',t:'Байрны урьдчилгаа',i1:'car',i2:'home'},
+  {f:'iPhone',t:'Laptop + cash',i1:'phone',i2:'brief'},
+  {f:'Кофе машин',t:'Автомашин',i1:'brief',i2:'car'},
+  {f:'Үйлчилгээ',t:'Бараа',i1:'wrench',i2:'pkg'},
+];
+
+// ── RENDER ──
+// Marquee
+const mqt=document.getElementById('mqt');
+[...CATS,...CATS,...CATS].forEach(c=>{
+  const b=document.createElement('button');
+  b.className='mqc';
+  b.innerHTML=`${S(c.k,20)}<span>${c.n}</span>`;
+  b.onclick=()=>g('cgs');
+  b.addEventListener('mouseenter',()=>{b.style.background=c.g;b.style.color='#fff';b.style.borderColor='transparent'});
+  b.addEventListener('mouseleave',()=>{b.style.cssText=''});
+  mqt.appendChild(b);
+});
+
+// Chips
+document.getElementById('cr').innerHTML=CHP.map(c=>`<button class="chip" onclick="this.classList.toggle('on')">${c}</button>`).join('');
+
+// Cat grid
+document.getElementById('cgrid').innerHTML=CATS.map(c=>`
+  <button class="cc" onclick="g('ls')">
+    <div class="ci" style="background:${c.g}">${S(c.k,20)}</div>
+    <div class="cn">${c.n}</div>
+    <div class="cd">${c.d}</div>
+  </button>`).join('');
+
+// Listing card helper
+const lcard=(x,pr=false)=>`
+  <div class="${pr?'pcard':'lcard'}" onclick="oo(${x.id})">
+    <div class="${pr?'ptmb':'lt'}" style="background:${x.g}">
+      ${S(x.k,pr?80:56)}
+      <div class="lba">
+        ${pr?`<span class="bpr">${S('star',10)} PREMIUM</span>`:''}
+        ${(x.ok||pr)?`<span class="bok">${S('check',10)} Баталгаажсан</span>`:''}
+      </div>
+    </div>
+    <div class="${pr?'pbody':'lbody'}">
+      <div class="${pr?'ptit':'ltit'}">${x.t}</div>
+      <div class="${pr?'pval':'lval'}">Үнэлгээ: ${x.v}</div>
+      <div class="${pr?'pbar':'lbar'}">⇋ ${x.b}</div>
+      <div class="${pr?'ploc':'lmet'}">
+        ${pr?`${S('pin',12)} ${x.l}`:`<span class="lloc">${S('pin',12)} ${x.l}</span><span class="lcon">${x.c}</span>`}
+      </div>
+      ${pr?`<button class="pbtn" onclick="event.stopPropagation();oo(${x.id})">Санал өгөх ${A()}</button>`
+          :`<button class="obtn" onclick="event.stopPropagation();oo(${x.id})">Санал өгөх</button>`}
+    </div>
+  </div>`;
+
+document.getElementById('lgrid').innerHTML=LIS.map(x=>lcard(x)).join('');
+document.getElementById('pgrid').innerHTML=PREM.map(x=>lcard(x,true)).join('');
+
+// Backers
+const bktr=document.getElementById('bktr');
+[...BKS,...BKS].forEach(b=>{
+  const s=document.createElement('span');
+  s.className='bki';s.style.cssText=b.s;s.textContent=b.n;
+  bktr.appendChild(s);
+});
+
+// UC pairs
+document.getElementById('ucp').innerHTML=UCP.map(p=>`
+  <div class="ucpa">
+    <div class="ucpi">
+      <div class="ucic">${S(p.i1,16)}</div>
+      <span style="color:#94a3b8;font-size:14px">→</span>
+      <div class="ucic">${S(p.i2,16)}</div>
+    </div>
+    <div class="ucpf">${p.f}</div>
+    <div class="ucpt">↔ ${p.t}</div>
+  </div>`).join('');
+
+if(window.innerWidth>=640) document.getElementById('hnsf').style.display='block';
+
+// ── HELPERS ──
+const g=id=>{const e=document.getElementById(id);if(e)e.scrollIntoView({behavior:'smooth'});else window.scrollTo({top:0,behavior:'smooth'})};
+const cl=id=>document.getElementById(id).classList.remove('open');
+const ss=(fId,dId)=>{document.getElementById(fId).style.display='none';document.getElementById(dId).style.display='block'};
+document.querySelectorAll('.ov').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open')}));
+
+const oo=id=>{
+  const all=[...LIS,...PREM];
+  const x=all.find(i=>i.id===id);
+  if(x) document.getElementById('osub').textContent=`${x.t} — ${x.v}`;
+  document.getElementById('of').style.display='block';
+  document.getElementById('od').style.display='none';
+  document.getElementById('om').classList.add('open');
+};
+
+// ── WIZARD ──
+let wSt=1,wCat='',wCond='',wBt='';
+const openW=()=>{
+  wSt=1;wCat='';wCond='';wBt='';
+  document.getElementById('wf').style.display='block';
+  document.getElementById('wd').style.display='none';
+  rw();
+  document.getElementById('wm').classList.add('open');
+};
+const rw=()=>{
+  document.getElementById('wlbl').textContent=`Алхам ${wSt}/5`;
+  document.getElementById('wp').innerHTML=[1,2,3,4,5].map(s=>`<div class="ws${s<=wSt?' dn':''}"></div>`).join('');
+  let h='';
+  if(wSt===1){
+    h=`<p style="font-weight:700;font-size:15px;color:#0a1b33;margin-bottom:1rem">Категори сонгох</p>
+    <div class="wcs">${CATS.map(c=>`
+      <button class="wc${wCat===c.n?' sl':''}" onclick="wCat='${c.n}';rw()">
+        <div class="wcic" style="background:${c.g}">${S(c.k,16)}</div>
+        <div class="wn">${c.n}</div>
+      </button>`).join('')}</div>`;
+  }else if(wSt===2){
+    h=`<p style="font-weight:700;font-size:15px;color:#0a1b33;margin-bottom:1rem">Зураг оруулах</p>
+    <div class="upl">${S('img',40)}<div class="ut">Үндсэн зургаа оруулна уу</div><div class="us">JPG, PNG — 10MB хүртэл</div></div>
+    <div class="ei"><div class="esl">+</div><div class="esl">+</div><div class="esl">+</div></div>`;
+  }else if(wSt===3){
+    h=`<div class="ff"><label>Гарчиг</label><input placeholder="Жишээ: Toyota Prius 30, 2015"/></div>
+    <div class="ff"><label>Үнэлгээ (₮)</label><input placeholder="28,000,000"/></div>
+    <div class="ff"><label>Байршил</label><select><option>Сонгох...</option><option>УБ, БЗД</option><option>УБ, СБД</option><option>УБ, ЧД</option><option>УБ, БГД</option><option>УБ, Хан-Уул</option></select></div>
+    <div class="ff"><label>Нөхцөл</label><div class="cbs">
+      <button class="cb2${wCond==='Шинэ'?' sl':''}" onclick="wCond='Шинэ';rw()">Шинэ</button>
+      <button class="cb2${wCond==='Хуучин'?' sl':''}" onclick="wCond='Хуучин';rw()">Хуучин</button>
+    </div></div>`;
+  }else if(wSt===4){
+    h=`<div class="ff"><label>Юугаар сольж хүсэлтэй вэ?</label><input placeholder="Жишээ: Байрны урьдчилгаа, iPhone"/></div>
+    <label style="display:block;font-size:13px;font-weight:700;color:#0a1b33;margin-bottom:.5rem">Бартерын төрөл</label>
+    <div class="bts">${BT.map(t=>`<button class="btc${wBt===t?' sl':''}" onclick="wBt='${t}';rw()">${t}</button>`).join('')}</div>
+    <label class="fck"><input type="checkbox"/> Cash нэмэх боломжтой</label>`;
+  }else{
+    h=`<div class="ff"><label>Нэр</label><input placeholder="Таны нэр"/></div>
+    <div class="ff"><label>Утас</label><input placeholder="9911XXXX"/></div>
+    <label class="fck"><input type="checkbox"/> Chat-аар холбогдох боломжтой</label>`;
+  }
+  document.getElementById('wcon').innerHTML=h;
+  let f=wSt>1?`<button class="wbk" onclick="wSt--;rw()">Өмнөх</button>`:'';
+  f+=wSt<5
+    ?`<button class="wnx" onclick="wSt++;rw()">Дараах ${A()}</button>`
+    :`<button class="wnx" onclick="ss('wf','wd')">Нийтлэх ${A()}</button>`;
+  document.getElementById('wft').innerHTML=f;
+};
+</script>
+</body>
+</html>
