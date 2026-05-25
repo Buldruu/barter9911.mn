@@ -7,6 +7,12 @@
 <meta name="description" content="Машин, үл хөдлөх, бараа бүтээгдэхүүнээ мөнгөгүйгээр бартер солилцох Монголын платформ"/>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0%25' stop-color='%230ea5e9'/><stop offset='100%25' stop-color='%2310b981'/></linearGradient></defs><rect width='64' height='64' rx='14' fill='url(%23g)'/><text x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial Black' font-weight='900' font-size='38' fill='white'>B</text></svg>"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600&display=swap" rel="stylesheet"/>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
@@ -18,7 +24,18 @@ svg{display:inline-block;vertical-align:middle;flex-shrink:0}
 a{text-decoration:none;color:inherit}
 :root{--brand:#0ea5e9;--dark:#0a152d;--dark2:#0f1f3d;--bg:#F5F5F5;--grad:linear-gradient(135deg,#0ea5e9,#10b981)}
 .wrap{max-width:88rem;margin:0 auto;padding:0 1.5rem}
-/* HERO */
+.ey{font-size:.8125rem;color:rgba(0,0,0,.55);margin-bottom:.5rem}
+.st{font-size:clamp(2rem,4vw,3rem);font-weight:600;letter-spacing:-.03em;line-height:1.1;color:#000}
+
+/* ── LOADING ── */
+.skeleton{background:linear-gradient(90deg,#f0f0f0 25%,#e0e0e0 50%,#f0f0f0 75%);background-size:200% 100%;animation:sk 1.5s infinite;border-radius:12px}
+@keyframes sk{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.spin{width:20px;height:20px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite;display:inline-block}
+@keyframes sp{to{transform:rotate(360deg)}}
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:#0a152d;color:#fff;padding:.75rem 1.5rem;border-radius:999px;font-size:13px;font-weight:600;z-index:500;opacity:0;transition:opacity .3s;pointer-events:none}
+.toast.show{opacity:1}
+
+/* ── HERO ── */
 #hw{background:#f9fafb;padding:1.5rem 1rem 0}
 .hc{position:relative;width:100%;max-width:1400px;margin:0 auto;border-radius:48px;overflow:hidden;height:560px;background:#fff;border:1px solid rgba(148,163,184,.2);box-shadow:0 40px 100px -20px rgba(0,0,0,.05);display:flex;flex-direction:column}
 @media(min-width:768px){.hc{height:640px}}
@@ -34,6 +51,8 @@ a{text-decoration:none;color:inherit}
 @media(min-width:768px){.hbtns{display:flex}}
 .bgh{padding:.5rem 1.25rem;font-size:13px;font-weight:600;color:#475569;border-radius:999px}
 .bds{padding:.5rem 1.25rem;font-size:13px;font-weight:600;color:#fff;background:var(--dark);border-radius:999px}
+.user-btn{display:flex;align-items:center;gap:.5rem;padding:.375rem .875rem .375rem .5rem;background:rgba(255,255,255,.9);border-radius:999px;font-size:12px;font-weight:700;color:var(--dark);border:1px solid rgba(148,163,184,.4)}
+.user-avatar{width:26px;height:26px;border-radius:50%;object-fit:cover}
 .hcon{position:relative;z-index:2;flex:1;padding:2.5rem 2rem 0;display:flex;flex-direction:column;align-items:flex-start}
 @media(min-width:768px){.hcon{padding:3rem 3.5rem 0}}
 .hbadge{display:inline-flex;align-items:center;gap:.4rem;background:rgba(255,255,255,.88);backdrop-filter:blur(8px);border:1px solid rgba(148,163,184,.4);border-radius:999px;padding:.375rem .875rem;font-size:11px;font-weight:700;color:var(--dark);margin-bottom:1rem}
@@ -52,6 +71,7 @@ a{text-decoration:none;color:inherit}
 .hnlogo{width:36px;height:36px;background:#fff;border:1px solid #e2e8f0;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--brand);font-size:14px;flex-shrink:0}
 .hnb{padding:.5rem .875rem;font-size:12px;font-weight:700;color:#64748b;border-radius:999px;border:none;cursor:pointer;background:none}
 .hncta{display:inline-flex;align-items:center;gap:.25rem;background:#fff;border:1px solid rgba(148,163,184,.5);border-radius:999px;padding:.5rem 1.25rem;font-size:12px;font-weight:700;color:var(--dark);cursor:pointer}
+
 /* MARQUEE */
 #mqw{background:#f9fafb;padding:2.5rem 0}
 .mqo{max-width:1400px;margin:0 auto;overflow:hidden;mask-image:linear-gradient(to right,transparent,black 8%,black 92%,transparent);-webkit-mask-image:linear-gradient(to right,transparent,black 8%,black 92%,transparent)}
@@ -59,6 +79,7 @@ a{text-decoration:none;color:inherit}
 .mqt:hover{animation-play-state:paused}
 @keyframes mqx{from{transform:translateX(0)}to{transform:translateX(-33.333%)}}
 .mqc{height:96px;width:208px;flex-shrink:0;border-radius:999px;background:#fff;border:1px solid rgba(148,163,184,.45);display:flex;align-items:center;justify-content:center;gap:.625rem;font-weight:700;font-size:14px;color:var(--dark);transition:all .35s;cursor:pointer;padding:0 1.5rem}
+
 /* SEARCH */
 #ss{background:var(--bg);padding:4rem 1.5rem 2rem}
 .sbox{background:#fff;border-radius:24px;padding:1.25rem 1.75rem;border:1px solid rgba(148,163,184,.4);box-shadow:0 4px 30px rgba(0,0,0,.04)}
@@ -69,11 +90,11 @@ a{text-decoration:none;color:inherit}
 .cr{display:flex;flex-wrap:wrap;gap:.5rem}
 .chip{padding:.375rem 1rem;border-radius:999px;font-size:12px;font-weight:600;background:#F5F5F5;color:#475569;cursor:pointer;border:none;transition:all .2s}
 .chip.on{background:var(--dark);color:#fff}
+
 /* MEET */
 #ms{background:var(--bg);padding:5rem 1.5rem}
 .mt2{display:grid;grid-template-columns:1fr;gap:3rem;margin-bottom:4rem;align-items:start}
 @media(min-width:768px){.mt2{grid-template-columns:1fr 1fr}}
-.st{font-size:clamp(2rem,4vw,3rem);font-weight:600;letter-spacing:-.03em;line-height:1.1;color:#000}
 .ssub{font-size:clamp(1.25rem,2.5vw,1.75rem);color:rgba(0,0,0,.6);line-height:1.5}
 .pb{display:inline-flex;align-items:center;gap:.625rem;background:var(--dark);color:#fff;font-size:.9375rem;font-weight:600;border-radius:999px;padding:.5rem .5rem .5rem 2rem;border:none;cursor:pointer;margin-top:2rem}
 .pb .arr{background:#fff;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center}
@@ -85,9 +106,9 @@ a{text-decoration:none;color:inherit}
 .mcard p{font-size:.875rem;line-height:1.6}
 .mbr{background:var(--grad)}.mbr h3,.mbr p{color:rgba(255,255,255,.92)}
 .mdk{background:var(--dark2)}.mdk h3{color:#fff}.mdk p{color:rgba(255,255,255,.5)}
+
 /* CAT GRID */
 #cgs{background:var(--bg);padding:4rem 1.5rem}
-.ey{font-size:.8125rem;color:rgba(0,0,0,.55);margin-bottom:.5rem}
 .cg{display:grid;grid-template-columns:repeat(2,1fr);gap:.75rem}
 @media(min-width:640px){.cg{grid-template-columns:repeat(3,1fr)}}
 @media(min-width:1024px){.cg{grid-template-columns:repeat(6,1fr)}}
@@ -97,6 +118,7 @@ a{text-decoration:none;color:inherit}
 .cn{font-weight:700;font-size:15px;color:var(--dark);margin-bottom:.25rem;transition:color .25s}
 .cd{font-size:12px;color:#64748b;line-height:1.5;transition:color .25s}
 .cc:hover .cn,.cc:hover .cd{color:#fff}
+
 /* LISTINGS */
 #ls{background:var(--bg);padding:4rem 1.5rem}
 .lh{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;margin-bottom:2.5rem;gap:1rem}
@@ -119,6 +141,7 @@ a{text-decoration:none;color:inherit}
 .lloc{font-size:11px;color:#94a3b8;display:inline-flex;align-items:center;gap:.25rem}
 .lcon{font-size:10px;color:#64748b;background:#f1f5f9;padding:.25rem .625rem;border-radius:6px}
 .obtn{width:100%;background:var(--dark);color:#fff;font-size:13px;font-weight:700;border-radius:999px;padding:.625rem;border:none;cursor:pointer}
+
 /* PREMIUM */
 #ps{background:var(--bg);padding:4rem 1.5rem}
 .pbdg{display:inline-flex;align-items:center;gap:.4rem;background:#fffbeb;border:1px solid #fcd34d;border-radius:999px;padding:.25rem .875rem;margin-bottom:.75rem;font-size:11px;font-weight:700;color:#d97706}
@@ -134,6 +157,7 @@ a{text-decoration:none;color:inherit}
 .pbar{font-size:13px;color:#64748b;margin-bottom:.375rem}
 .ploc{font-size:12px;color:#94a3b8;display:inline-flex;align-items:center;gap:.25rem;margin-bottom:1rem}
 .pbtn{width:100%;display:inline-flex;align-items:center;justify-content:center;gap:.5rem;background:var(--dark);color:#fff;font-size:13px;font-weight:700;border-radius:999px;padding:.5rem .5rem .5rem 1.5rem;border:none;cursor:pointer}
+
 /* BACKERS */
 #bks{background:var(--bg);padding:3rem 1.5rem}
 .bkg{display:grid;grid-template-columns:1fr;gap:2rem;align-items:center}
@@ -143,6 +167,7 @@ a{text-decoration:none;color:inherit}
 .bktr{display:flex;align-items:center;width:max-content;animation:bkx 30s linear infinite}
 @keyframes bkx{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 .bki{padding:.75rem 2.5rem;flex-shrink:0;color:rgba(0,0,0,.45);white-space:nowrap}
+
 /* USE CASES */
 #ucs{background:var(--bg);padding:5rem 1.5rem}
 .ucg{display:grid;grid-template-columns:1fr;gap:2rem;align-items:start}
@@ -165,6 +190,7 @@ a{text-decoration:none;color:inherit}
 .ucov p{font-size:.9375rem;color:rgba(0,0,0,.65);max-width:400px;margin-bottom:2rem;line-height:1.65}
 .ucln{display:inline-flex;align-items:center;gap:.75rem;font-weight:600;color:#000}
 .ucci{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.8);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center}
+
 /* HOW */
 #hs{background:var(--bg);padding:5rem 1.5rem}
 .hctr{text-align:center;margin-bottom:4rem}
@@ -175,6 +201,7 @@ a{text-decoration:none;color:inherit}
 .hwn{font-size:4.25rem;font-weight:600;color:#e2e8f0;letter-spacing:-.04em;line-height:1;margin-bottom:.5rem}
 .hwc h3{font-weight:700;font-size:1.125rem;color:var(--dark);margin-bottom:.5rem}
 .hwc p{font-size:.8125rem;color:#64748b;line-height:1.6}
+
 /* SAFETY */
 #sfs{background:var(--bg);padding:5rem 1.5rem}
 .sfg{display:grid;grid-template-columns:1fr;gap:3rem;align-items:start}
@@ -193,6 +220,7 @@ a{text-decoration:none;color:inherit}
 .tic svg{width:20px;height:20px;color:#fff}
 .til{font-weight:700;font-size:14px;color:#fff}
 .tis{font-size:12px;color:rgba(255,255,255,.4)}
+
 /* CTA */
 #cs{background:var(--bg);padding:4rem 1.5rem 5rem}
 .cb{max-width:88rem;margin:0 auto;background:var(--dark);border-radius:24px;padding:4rem 2rem;text-align:center;position:relative;overflow:hidden}
@@ -200,6 +228,7 @@ a{text-decoration:none;color:inherit}
 .cb h2{position:relative;font-size:clamp(2rem,5vw,3.5rem);font-weight:600;letter-spacing:-.03em;line-height:1.1;color:#fff;margin-bottom:1.25rem}
 .cb p{position:relative;font-size:1rem;color:rgba(255,255,255,.65);max-width:500px;margin:0 auto 2.5rem}
 .cbtn{position:relative;display:inline-flex;align-items:center;gap:.75rem;background:#fff;color:#000;font-size:.9375rem;font-weight:700;border-radius:999px;padding:.5rem .5rem .5rem 2rem;border:none;cursor:pointer}
+
 /* FOOTER */
 footer{background:var(--dark);color:rgba(255,255,255,.6);padding:5rem 1.5rem 2rem}
 .fg{max-width:88rem;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:2.5rem;margin-bottom:3rem}
@@ -208,6 +237,7 @@ footer{background:var(--dark);color:rgba(255,255,255,.6);padding:5rem 1.5rem 2re
 .fc h4{color:#fff;font-weight:700;font-size:.875rem;margin-bottom:1rem}
 .fc a{display:block;font-size:.8125rem;margin-bottom:.625rem;color:rgba(255,255,255,.55)}
 .fbot{max-width:88rem;margin:0 auto;border-top:1px solid rgba(255,255,255,.08);padding-top:2rem;text-align:center;font-size:.75rem;color:rgba(255,255,255,.3)}
+
 /* MOBILE NAV */
 #mn{display:flex;position:fixed;bottom:0;left:0;right:0;z-index:100;background:#fff;border-top:1px solid rgba(148,163,184,.4);padding-bottom:env(safe-area-inset-bottom)}
 @media(min-width:768px){#mn{display:none}}
@@ -216,6 +246,7 @@ footer{background:var(--dark);color:rgba(255,255,255,.6);padding:5rem 1.5rem 2re
 .mni svg{width:20px;height:20px}
 .mnar{background:var(--grad);border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center}
 .mnar svg{color:#fff}
+
 /* MODALS */
 .ov{display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.5);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:1rem}
 .ov.open{display:flex}
@@ -233,12 +264,14 @@ footer{background:var(--dark);color:rgba(255,255,255,.6);padding:5rem 1.5rem 2re
 .fck{display:flex;align-items:center;gap:.5rem;font-size:.875rem;font-weight:500;cursor:pointer;margin-bottom:1rem}
 .fck input{accent-color:var(--dark)}
 .msub2{width:100%;display:inline-flex;align-items:center;justify-content:center;gap:.625rem;background:var(--dark);color:#fff;font-size:.875rem;font-weight:700;border-radius:999px;padding:.625rem .625rem .625rem 1.75rem;margin-top:.5rem;border:none;cursor:pointer}
+.msub2:disabled{opacity:.6;cursor:not-allowed}
 .suc{text-align:center;padding:3rem 1.75rem}
 .sico{width:64px;height:64px;border-radius:16px;background:#f0fdf4;border:1px solid #bbf7d0;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem}
 .sico svg{width:28px;height:28px;color:#16a34a}
 .stit{font-size:1.25rem;font-weight:700;color:var(--dark);margin-bottom:.5rem}
 .sdsc{font-size:.875rem;color:#64748b;margin-bottom:1.5rem}
 .scls{background:var(--dark);color:#fff;font-size:.875rem;font-weight:700;border-radius:999px;padding:.75rem 2rem;border:none;cursor:pointer}
+
 /* WIZARD */
 .wp{display:flex;gap:.375rem;margin-bottom:1.5rem}
 .ws{flex:1;height:4px;border-radius:2px;background:#e2e8f0;transition:background .3s}
@@ -265,9 +298,23 @@ footer{background:var(--dark);color:rgba(255,255,255,.6);padding:5rem 1.5rem 2re
 .wft{display:flex;gap:.625rem;margin-top:1.5rem}
 .wbk{flex:1;background:#f1f5f9;color:var(--dark);font-size:.875rem;font-weight:700;border-radius:999px;padding:.75rem;border:none;cursor:pointer}
 .wnx{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:.5rem;background:var(--dark);color:#fff;font-size:.875rem;font-weight:700;border-radius:999px;padding:.625rem .625rem .625rem 1.5rem;border:none;cursor:pointer}
+.wnx:disabled{opacity:.6;cursor:not-allowed}
+
+/* AUTH MODAL */
+.auth-box{padding:2rem;text-align:center}
+.auth-logo{width:56px;height:56px;border-radius:14px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:24px;color:#fff;margin:0 auto 1rem}
+.auth-title{font-size:1.25rem;font-weight:700;color:var(--dark);margin-bottom:.375rem}
+.auth-sub{font-size:.875rem;color:#64748b;margin-bottom:1.5rem}
+.google-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:.75rem;background:#fff;border:1.5px solid #e2e8f0;border-radius:12px;padding:.875rem;font-size:.9375rem;font-weight:600;color:#0a1b33;cursor:pointer;transition:all .2s;margin-bottom:.75rem}
+.google-btn:hover{border-color:#94a3b8;background:#f8fafc}
+.auth-sep{font-size:.75rem;color:#94a3b8;margin-bottom:.75rem}
+.auth-skip{font-size:.8125rem;font-weight:600;color:#64748b;cursor:pointer;text-decoration:underline}
 </style>
 </head>
 <body>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
 
 <!-- HERO -->
 <div id="hw">
@@ -279,9 +326,9 @@ footer{background:var(--dark);color:rgba(255,255,255,.6);padding:5rem 1.5rem 2re
   </div>
   <div class="hbar">
     <div class="brand"><div class="bico">B</div><span class="bname">barter<span>9911</span>.mn</span></div>
-    <div class="hbtns">
-      <button class="bgh" onclick="openW()">Нэвтрэх</button>
-      <button class="bds" onclick="openW()">Бүртгүүлэх</button>
+    <div class="hbtns" id="authArea">
+      <button class="bgh" onclick="openAuth()">Нэвтрэх</button>
+      <button class="bds" onclick="openAuth()">Бүртгүүлэх</button>
     </div>
   </div>
   <div class="hcon">
@@ -292,7 +339,7 @@ footer{background:var(--dark);color:rgba(255,255,255,.6);padding:5rem 1.5rem 2re
       <button class="bp" onclick="openW()">Зар нэмэх
         <span class="arr"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
       </button>
-      <button class="bs" onclick="g('ls')">Санал хайх</button>
+      <button class="bs" onclick="goTo('ls')">Санал хайх</button>
     </div>
   </div>
   <div class="htrust">
@@ -302,10 +349,10 @@ footer{background:var(--dark);color:rgba(255,255,255,.6);padding:5rem 1.5rem 2re
   </div>
   <div class="hnav">
     <div class="hnlogo">✦</div>
-    <button class="hnb" onclick="g('cgs')">Категори</button>
-    <button class="hnb" onclick="g('ls')">Саналууд</button>
-    <button class="hnb" onclick="g('sfs')" id="hnsf" style="display:none">Аюулгүй</button>
-    <button class="hncta" onclick="openW()">Нэвтрэх<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg></button>
+    <button class="hnb" onclick="goTo('cgs')">Категори</button>
+    <button class="hnb" onclick="goTo('ls')">Саналууд</button>
+    <button class="hnb" onclick="goTo('sfs')" id="hnsf" style="display:none">Аюулгүй</button>
+    <button class="hncta" onclick="openAuth()">Нэвтрэх<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg></button>
   </div>
 </div>
 </div>
@@ -320,9 +367,9 @@ footer{background:var(--dark);color:rgba(255,255,255,.6);padding:5rem 1.5rem 2re
     <div class="srow">
       <div class="sw">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-        <input class="si" placeholder="Юу хайж байна?"/>
+        <input class="si" id="searchInput" placeholder="Юу хайж байна?"/>
       </div>
-      <button class="bp" style="font-size:13px">Хайх
+      <button class="bp" style="font-size:13px" onclick="doSearch()">Хайх
         <span class="arr"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
       </button>
     </div>
@@ -366,7 +413,13 @@ footer{background:var(--dark);color:rgba(255,255,255,.6);padding:5rem 1.5rem 2re
     <div><div class="ey">Сүүлийн үеийн бартер</div><h2 class="st">Шинэ саналууд</h2></div>
     <a class="sa" href="#">Бүгдийг харах<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg></a>
   </div>
-  <div class="lg" id="lgrid"></div>
+  <div class="lg" id="lgrid">
+    <!-- Skeleton loading -->
+    <div style="height:280px" class="skeleton"></div>
+    <div style="height:280px" class="skeleton"></div>
+    <div style="height:280px" class="skeleton"></div>
+    <div style="height:280px" class="skeleton"></div>
+  </div>
 </div>
 </section>
 
@@ -375,7 +428,11 @@ footer{background:var(--dark);color:rgba(255,255,255,.6);padding:5rem 1.5rem 2re
 <div class="wrap">
   <div class="pbdg"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Админ баталгаажсан</div>
   <h2 class="st">Premium саналууд</h2>
-  <div class="pg" id="pgrid"></div>
+  <div class="pg" id="pgrid">
+    <div style="height:320px" class="skeleton"></div>
+    <div style="height:320px" class="skeleton"></div>
+    <div style="height:320px" class="skeleton"></div>
+  </div>
 </div>
 </section>
 
@@ -477,12 +534,30 @@ footer{background:var(--dark);color:rgba(255,255,255,.6);padding:5rem 1.5rem 2re
 
 <!-- MOBILE NAV -->
 <nav id="mn">
-  <button class="mni on" onclick="g('hw')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>Нүүр</span></button>
-  <button class="mni" onclick="g('ls')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg><span>Хайх</span></button>
+  <button class="mni on" onclick="goTo('hw')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>Нүүр</span></button>
+  <button class="mni" onclick="goTo('ls')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg><span>Хайх</span></button>
   <button class="mni" onclick="openW()"><div class="mnar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div><span>Нэмэх</span></button>
   <button class="mni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg><span>Чат</span></button>
-  <button class="mni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>Профайл</span></button>
+  <button class="mni" onclick="openAuth()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>Профайл</span></button>
 </nav>
+
+<!-- AUTH MODAL -->
+<div class="ov" id="authModal">
+<div class="modal" style="max-width:400px">
+  <button class="mx" onclick="cl('authModal')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+  <div class="auth-box">
+    <div class="auth-logo">B</div>
+    <div class="auth-title">barter9911.mn-д тавтай морил</div>
+    <div class="auth-sub">Зар нэмэхийн тулд нэвтрэх шаардлагатай</div>
+    <button class="google-btn" onclick="signInGoogle()">
+      <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+      Google-ээр нэвтрэх
+    </button>
+    <div class="auth-sep">эсвэл</div>
+    <button class="auth-skip" onclick="cl('authModal');openW()">Нэвтрэлгүй үргэлжлүүлэх →</button>
+  </div>
+</div>
+</div>
 
 <!-- OFFER MODAL -->
 <div class="ov" id="om">
@@ -491,17 +566,19 @@ footer{background:var(--dark);color:rgba(255,255,255,.6);padding:5rem 1.5rem 2re
   <div class="mb" id="of">
     <div class="mttl">Бартер санал илгээх</div>
     <div class="msub" id="osub">Зарын мэдээлэл</div>
-    <div class="ff"><label>Санал болгож буй зүйл</label><input placeholder="Жишээ: Toyota Camry 2018"/></div>
-    <div class="ff"><label>Үнэлгээ (₮)</label><input placeholder="28,000,000"/></div>
-    <label class="fck"><input type="checkbox"/> Cash нэмэх боломжтой</label>
-    <div class="ff"><label>Утас</label><input placeholder="9911XXXX"/></div>
-    <div class="ff"><label>Тайлбар</label><textarea rows="3" placeholder="Нэмэлт мэдээлэл..."></textarea></div>
-    <button class="msub2" onclick="ss('of','od')">Санал илгээх<span class="arrsm"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span></button>
+    <div class="ff"><label>Санал болгож буй зүйл</label><input id="oItem" placeholder="Жишээ: Toyota Camry 2018"/></div>
+    <div class="ff"><label>Үнэлгээ (₮)</label><input id="oVal" placeholder="28,000,000"/></div>
+    <label class="fck"><input type="checkbox" id="oCash"/> Cash нэмэх боломжтой</label>
+    <div class="ff"><label>Утас</label><input id="oPhone" placeholder="9911XXXX"/></div>
+    <div class="ff"><label>Тайлбар</label><textarea id="oNote" rows="3" placeholder="Нэмэлт мэдээлэл..."></textarea></div>
+    <button class="msub2" id="offerSubmitBtn" onclick="submitOffer()">Санал илгээх
+      <span class="arrsm"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+    </button>
   </div>
   <div class="suc" id="od" style="display:none">
     <div class="sico"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg></div>
     <div class="stit">Санал илгээгдлээ</div>
-    <div class="sdsc">Зар эзэмшигч тантай удахгүй холбогдоно.</div>
+    <div class="sdsc">Firebase-д хадгалагдлаа. Зар эзэмшигч тантай удахгүй холбогдоно.</div>
     <button class="scls" onclick="cl('om')">Хаах</button>
   </div>
 </div>
@@ -523,208 +600,455 @@ footer{background:var(--dark);color:rgba(255,255,255,.6);padding:5rem 1.5rem 2re
   <div class="suc" id="wd" style="display:none">
     <div class="sico"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg></div>
     <div class="stit">Зар нийтлэгдлээ</div>
-    <div class="sdsc">Таны зар бусад хэрэглэгчид удахгүй харагдаж эхэлнэ.</div>
-    <button class="scls" onclick="cl('wm')">Хаах</button>
+    <div class="sdsc">Firebase-д хадгалагдлаа. Удахгүй бусад хэрэглэгчид харагдана.</div>
+    <button class="scls" onclick="cl('wm');loadData()">Хаах</button>
   </div>
 </div>
 </div>
 
 <script>
-// ── SVG PATHS ──
-const P={
-  arrow:'<path d="M5 12h14M12 5l7 7-7 7"/>',
-  check:'<path d="M20 6L9 17l-5-5"/>',
-  car:'<path d="M5 17H3a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v7a2 2 0 01-2 2h-2"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/>',
-  home:'<path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>',
-  brief:'<rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/>',
-  phone:'<rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/>',
-  wrench:'<path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/>',
-  pkg:'<line x1="16.5" y1="9.4" x2="7.5" y2="4.21"/><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/>',
-  pin:'<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/>',
-  star:'<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>',
-  img:'<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>',
+// ══════════════════════════════════════════════
+// ⚠️  FIREBASE CONFIG — ӨӨРИЙН ТОХИРГООГОО ЭНД ОРУУЛНА
+// Firebase Console → Project Settings → Your Apps → Config
+// ══════════════════════════════════════════════
+const firebaseConfig = {
+  apiKey:            "",
+  authDomain:        "",
+  projectId:         "",
+  storageBucket:     "",
+  messagingSenderId: "",
+  appId:             "",
+  measurementId:     ""
 };
-const S=(k,sz=16,col='currentColor')=>`<svg width="${sz}" height="${sz}" viewBox="0 0 24 24" fill="none" stroke="${col}" stroke-width="2">${P[k]||''}</svg>`;
-const A=(col='#000')=>`<span class="arrsm"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="${col}" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>`;
+// ══════════════════════════════════════════════
 
-// ── DATA ──
-const CATS=[
-  {n:'Автомашин',d:'Машин ↔ машин, байрны урьдчилгаа',k:'car',g:'linear-gradient(135deg,#0ea5e9,#1d4ed8)'},
-  {n:'Үл хөдлөх',d:'Байр, газар, хаус',k:'home',g:'linear-gradient(135deg,#8b5cf6,#ec4899)'},
-  {n:'Бизнес тоног',d:'Кофе машин, gym, компьютер',k:'brief',g:'linear-gradient(135deg,#f59e0b,#ef4444)'},
-  {n:'Electronics',d:'iPhone, laptop, tablet',k:'phone',g:'linear-gradient(135deg,#10b981,#0ea5e9)'},
-  {n:'Үйлчилгээ',d:'Маркетинг, засвар, сургалт',k:'wrench',g:'linear-gradient(135deg,#ec4899,#8b5cf6)'},
-  {n:'Бусад бараа',d:'Тавилга, хувцас, бүтээгдэхүүн',k:'pkg',g:'linear-gradient(135deg,#6366f1,#0ea5e9)'},
-];
-const LIS=[
-  {id:1,t:'Toyota Prius 30',v:'28 сая ₮',b:'Байрны урьдчилгаа / iPhone / cash',l:'УБ, БЗД',k:'car',c:'Хуучин',ok:true,g:'linear-gradient(135deg,#0ea5e9,#6366f1)'},
-  {id:2,t:'2 өрөө байр, Хан-Уул',v:'180 сая ₮',b:'Автомашин + cash / газар',l:'УБ, Хан-Уул',k:'home',c:'Шинэ',ok:true,g:'linear-gradient(135deg,#8b5cf6,#ec4899)'},
-  {id:3,t:'iPhone 15 Pro Max 256GB',v:'4.2 сая ₮',b:'Laptop / Samsung + cash',l:'УБ, СБД',k:'phone',c:'Шинэ',ok:true,g:'linear-gradient(135deg,#10b981,#0ea5e9)'},
-  {id:4,t:'Кофе машин La Marzocco',v:'12 сая ₮',b:'Автомашин / electronics',l:'УБ, ЧД',k:'brief',c:'Хуучин',ok:false,g:'linear-gradient(135deg,#f59e0b,#ef4444)'},
-  {id:5,t:'Gym equipment бүрэн сет',v:'35 сая ₮',b:'Автомашин / байр урьдчилгаа',l:'УБ, БГД',k:'brief',c:'Хуучин',ok:true,g:'linear-gradient(135deg,#ef4444,#f59e0b)'},
-  {id:6,t:'Маркетинг үйлчилгээ багц',v:'5 сая ₮',b:'Electronics / бараа бүтээгдэхүүн',l:'УБ, СБД',k:'wrench',c:'Шинэ',ok:true,g:'linear-gradient(135deg,#ec4899,#8b5cf6)'},
-  {id:7,t:'Оффис тавилга бүрэн сет',v:'8 сая ₮',b:'Электроник / автомашин',l:'УБ, ЧД',k:'pkg',c:'Хуучин',ok:false,g:'linear-gradient(135deg,#6366f1,#0ea5e9)'},
-  {id:8,t:'Gaming PC RTX 4080',v:'7.5 сая ₮',b:'MacBook / iPhone + cash',l:'УБ, БЗД',k:'phone',c:'Шинэ',ok:true,g:'linear-gradient(135deg,#10b981,#6366f1)'},
-];
-const PREM=[
-  {id:101,t:'Lexus RX 450h',v:'85 сая ₮',b:'Байр / газар + cash',l:'УБ, СБД',k:'car',g:'linear-gradient(135deg,#f59e0b,#ef4444)'},
-  {id:102,t:'Хан-Уул 2 өрөө байр',v:'220 сая ₮',b:'Автомашин + cash / бизнес тоноглол',l:'УБ, Хан-Уул',k:'home',g:'linear-gradient(135deg,#8b5cf6,#0ea5e9)'},
-  {id:103,t:'Кофе шоп тоноглол',v:'45 сая ₮',b:'Автомашин / байр урьдчилгаа',l:'УБ, БГД',k:'brief',g:'linear-gradient(135deg,#10b981,#f59e0b)'},
-];
-const BKS=[
-  {n:'MOST.MN',s:'font-family:"Times New Roman",serif;font-size:14px'},
-  {n:'UNITEL',s:'font-family:"Arial Black",sans-serif;font-weight:900;font-size:16px;letter-spacing:.08em'},
-  {n:'MOBICOM',s:'font-family:Impact,sans-serif;font-size:18px'},
-  {n:'Khan Bank',s:'font-family:Georgia,serif;font-weight:600;font-size:17px'},
-  {n:'Golomt',s:'font-family:Helvetica,sans-serif;font-weight:700;font-size:15px'},
-  {n:'BLOOMBERG.MN',s:'font-family:Verdana,sans-serif;font-weight:700;font-size:13px;text-transform:uppercase'},
-  {n:'TOP.MN',s:'font-family:"Courier New",monospace;font-weight:700;letter-spacing:.18em;font-size:13px'},
-  {n:'Baga.mn',s:'font-family:Palatino,serif;font-size:15px'},
-];
-const CHP=['Категори','Үнийн хэмжээ','Байршил','Бартер төрөл','Cash нэмэх','Шинэ/Хуучин','Баталгаажсан'];
-const BT=['Автомашин','Үл хөдлөх','Electronics','Үйлчилгээ','Cash хосолно','Юу ч болно'];
-const UCP=[
-  {f:'Машин',t:'Байрны урьдчилгаа',i1:'car',i2:'home'},
-  {f:'iPhone',t:'Laptop + cash',i1:'phone',i2:'brief'},
-  {f:'Кофе машин',t:'Автомашин',i1:'brief',i2:'car'},
-  {f:'Үйлчилгээ',t:'Бараа',i1:'wrench',i2:'pkg'},
-];
+firebase.initializeApp(firebaseConfig);
+const db   = firebase.firestore();
+const auth = firebase.auth();
 
-// ── RENDER ──
-// Marquee
-const mqt=document.getElementById('mqt');
-[...CATS,...CATS,...CATS].forEach(c=>{
-  const b=document.createElement('button');
-  b.className='mqc';
-  b.innerHTML=`${S(c.k,20)}<span>${c.n}</span>`;
-  b.onclick=()=>g('cgs');
-  b.addEventListener('mouseenter',()=>{b.style.background=c.g;b.style.color='#fff';b.style.borderColor='transparent'});
-  b.addEventListener('mouseleave',()=>{b.style.cssText=''});
-  mqt.appendChild(b);
+// ── CURRENT STATE ──
+let currentUser = null;
+let currentListingId = null;
+
+// ── AUTH STATE ──
+auth.onAuthStateChanged(user => {
+  currentUser = user;
+  const area = document.getElementById('authArea');
+  if (user) {
+    area.innerHTML = `
+      <button class="user-btn" onclick="signOut()">
+        <img class="user-avatar" src="${user.photoURL||'https://ui-avatars.com/api/?name='+encodeURIComponent(user.displayName||'U')+'&background=0ea5e9&color=fff'}" alt="avatar"/>
+        ${user.displayName ? user.displayName.split(' ')[0] : 'Хэрэглэгч'}
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+      </button>`;
+    document.querySelector('.hncta').textContent = 'Зар нэмэх';
+    document.querySelector('.hncta').onclick = openW;
+  } else {
+    area.innerHTML = `
+      <button class="bgh" onclick="openAuth()">Нэвтрэх</button>
+      <button class="bds" onclick="openAuth()">Бүртгүүлэх</button>`;
+  }
 });
 
-// Chips
-document.getElementById('cr').innerHTML=CHP.map(c=>`<button class="chip" onclick="this.classList.toggle('on')">${c}</button>`).join('');
+function signInGoogle() {
+  const provider = new firebase.auth.GoogleAuthProvider();
+  auth.signInWithPopup(provider)
+    .then(() => { cl('authModal'); toast('Амжилттай нэвтэрлээ!'); })
+    .catch(e => toast('Алдаа: ' + e.message));
+}
+function signOut() {
+  auth.signOut().then(() => toast('Гарлаа.'));
+}
+function openAuth() {
+  document.getElementById('authModal').classList.add('open');
+}
 
-// Cat grid
-document.getElementById('cgrid').innerHTML=CATS.map(c=>`
-  <button class="cc" onclick="g('ls')">
-    <div class="ci" style="background:${c.g}">${S(c.k,20)}</div>
-    <div class="cn">${c.n}</div>
-    <div class="cd">${c.d}</div>
-  </button>`).join('');
+// ── SVG PATHS ──
+const P = {
+  arrow: '<path d="M5 12h14M12 5l7 7-7 7"/>',
+  check: '<path d="M20 6L9 17l-5-5"/>',
+  car:   '<path d="M5 17H3a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v7a2 2 0 01-2 2h-2"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/>',
+  home:  '<path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>',
+  brief: '<rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/>',
+  phone: '<rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/>',
+  wrench:'<path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/>',
+  pkg:   '<line x1="16.5" y1="9.4" x2="7.5" y2="4.21"/><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/>',
+  pin:   '<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/>',
+  star:  '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>',
+  img:   '<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>',
+};
+const Ic = (k, sz=16, col='currentColor') =>
+  `<svg width="${sz}" height="${sz}" viewBox="0 0 24 24" fill="none" stroke="${col}" stroke-width="2">${P[k]||''}</svg>`;
+const Ar = (col='#000') =>
+  `<span class="arrsm"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="${col}" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>`;
 
-// Listing card helper
-const lcard=(x,pr=false)=>`
-  <div class="${pr?'pcard':'lcard'}" onclick="oo(${x.id})">
-    <div class="${pr?'ptmb':'lt'}" style="background:${x.g}">
-      ${S(x.k,pr?80:56)}
+// ── STATIC DATA ──
+const CATS = [
+  {n:'Автомашин', d:'Машин ↔ машин, байрны урьдчилгаа', k:'car',   g:'linear-gradient(135deg,#0ea5e9,#1d4ed8)'},
+  {n:'Үл хөдлөх', d:'Байр, газар, хаус',                k:'home',  g:'linear-gradient(135deg,#8b5cf6,#ec4899)'},
+  {n:'Бизнес тоног',d:'Кофе машин, gym, компьютер',     k:'brief', g:'linear-gradient(135deg,#f59e0b,#ef4444)'},
+  {n:'Electronics', d:'iPhone, laptop, tablet',          k:'phone', g:'linear-gradient(135deg,#10b981,#0ea5e9)'},
+  {n:'Үйлчилгээ',  d:'Маркетинг, засвар, сургалт',      k:'wrench',g:'linear-gradient(135deg,#ec4899,#8b5cf6)'},
+  {n:'Бусад бараа',d:'Тавилга, хувцас, бүтээгдэхүүн',   k:'pkg',   g:'linear-gradient(135deg,#6366f1,#0ea5e9)'},
+];
+const BKS = [
+  {n:'MOST.MN',      s:'font-family:"Times New Roman",serif;font-size:14px'},
+  {n:'UNITEL',       s:'font-family:"Arial Black",sans-serif;font-weight:900;font-size:16px;letter-spacing:.08em'},
+  {n:'MOBICOM',      s:'font-family:Impact,sans-serif;font-size:18px'},
+  {n:'Khan Bank',    s:'font-family:Georgia,serif;font-weight:600;font-size:17px'},
+  {n:'Golomt',       s:'font-family:Helvetica,sans-serif;font-weight:700;font-size:15px'},
+  {n:'BLOOMBERG.MN', s:'font-family:Verdana,sans-serif;font-weight:700;font-size:13px;text-transform:uppercase'},
+  {n:'TOP.MN',       s:'font-family:"Courier New",monospace;font-weight:700;font-size:13px;letter-spacing:.18em'},
+  {n:'Baga.mn',      s:'font-family:Palatino,serif;font-size:15px'},
+];
+const UCP = [
+  {f:'Машин',      t:'Байрны урьдчилгаа', i1:'car',   i2:'home'},
+  {f:'iPhone',     t:'Laptop + cash',     i1:'phone', i2:'brief'},
+  {f:'Кофе машин', t:'Автомашин',         i1:'brief', i2:'car'},
+  {f:'Үйлчилгээ',  t:'Бараа',             i1:'wrench',i2:'pkg'},
+];
+const CHIPS = ['Категори','Үнийн хэмжээ','Байршил','Бартер төрөл','Cash нэмэх','Шинэ/Хуучин','Баталгаажсан'];
+const BT    = ['Автомашин','Үл хөдлөх','Electronics','Үйлчилгээ','Cash хосолно','Юу ч болно'];
+
+// ── SEED DATA (Firestore хоосон үед ачаалагдана) ──
+const SEED_LISTINGS = [
+  {title:'Toyota Prius 30',         value:'28 сая ₮', barter:'Байрны урьдчилгаа / iPhone / cash', location:'УБ, БЗД',      category:'car',   categoryName:'Автомашин',   condition:'Хуучин', verified:true,  premium:false, gradient:'linear-gradient(135deg,#0ea5e9,#6366f1)', status:'active'},
+  {title:'2 өрөө байр, Хан-Уул',   value:'180 сая ₮',barter:'Автомашин + cash / газар',           location:'УБ, Хан-Уул', category:'home',  categoryName:'Үл хөдлөх',   condition:'Шинэ',   verified:true,  premium:false, gradient:'linear-gradient(135deg,#8b5cf6,#ec4899)', status:'active'},
+  {title:'iPhone 15 Pro Max 256GB', value:'4.2 сая ₮',barter:'Laptop / Samsung + cash',            location:'УБ, СБД',      category:'phone', categoryName:'Electronics',  condition:'Шинэ',   verified:true,  premium:false, gradient:'linear-gradient(135deg,#10b981,#0ea5e9)', status:'active'},
+  {title:'Кофе машин La Marzocco',  value:'12 сая ₮', barter:'Автомашин / electronics',            location:'УБ, ЧД',       category:'brief', categoryName:'Бизнес тоног', condition:'Хуучин', verified:false, premium:false, gradient:'linear-gradient(135deg,#f59e0b,#ef4444)', status:'active'},
+  {title:'Gym equipment бүрэн сет', value:'35 сая ₮', barter:'Автомашин / байр урьдчилгаа',        location:'УБ, БГД',      category:'brief', categoryName:'Бизнес тоног', condition:'Хуучин', verified:true,  premium:false, gradient:'linear-gradient(135deg,#ef4444,#f59e0b)', status:'active'},
+  {title:'Маркетинг үйлчилгээ',    value:'5 сая ₮',  barter:'Electronics / бараа бүтээгдэхүүн',   location:'УБ, СБД',      category:'wrench',categoryName:'Үйлчилгээ',    condition:'Шинэ',   verified:true,  premium:false, gradient:'linear-gradient(135deg,#ec4899,#8b5cf6)', status:'active'},
+  {title:'Оффис тавилга сет',       value:'8 сая ₮',  barter:'Электроник / автомашин',              location:'УБ, ЧД',       category:'pkg',   categoryName:'Бусад бараа',  condition:'Хуучин', verified:false, premium:false, gradient:'linear-gradient(135deg,#6366f1,#0ea5e9)', status:'active'},
+  {title:'Gaming PC RTX 4080',      value:'7.5 сая ₮',barter:'MacBook / iPhone + cash',             location:'УБ, БЗД',      category:'phone', categoryName:'Electronics',  condition:'Шинэ',   verified:true,  premium:false, gradient:'linear-gradient(135deg,#10b981,#6366f1)', status:'active'},
+  {title:'Lexus RX 450h',           value:'85 сая ₮', barter:'Байр / газар + cash',                 location:'УБ, СБД',      category:'car',   categoryName:'Автомашин',   condition:'Маш сайн',verified:true, premium:true,  gradient:'linear-gradient(135deg,#f59e0b,#ef4444)', status:'active'},
+  {title:'Хан-Уул 2 өрөө байр',    value:'220 сая ₮',barter:'Автомашин + cash / бизнес тоноглол', location:'УБ, Хан-Уул', category:'home',  categoryName:'Үл хөдлөх',   condition:'Маш сайн',verified:true, premium:true,  gradient:'linear-gradient(135deg,#8b5cf6,#0ea5e9)', status:'active'},
+  {title:'Кофе шоп тоноглол',       value:'45 сая ₮', barter:'Автомашин / байр урьдчилгаа',         location:'УБ, БГД',      category:'brief', categoryName:'Бизнес тоног', condition:'Маш сайн',verified:true, premium:true,  gradient:'linear-gradient(135deg,#10b981,#f59e0b)', status:'active'},
+];
+
+async function seedIfEmpty() {
+  const snap = await db.collection('listings').limit(1).get();
+  if (!snap.empty) return;
+  console.log('Seeding Firestore...');
+  const batch = db.batch();
+  SEED_LISTINGS.forEach(item => {
+    const ref = db.collection('listings').doc();
+    batch.set(ref, { ...item, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
+  });
+  await batch.commit();
+  console.log('Seed complete.');
+}
+
+// ── LOAD DATA FROM FIRESTORE ──
+async function loadData() {
+  try {
+    await seedIfEmpty();
+
+    // Load regular listings
+    const lSnap = await db.collection('listings')
+      .where('status', '==', 'active')
+      .where('premium', '==', false)
+      .orderBy('createdAt', 'desc')
+      .limit(8)
+      .get();
+
+    const listings = lSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+    renderListings(listings);
+
+    // Load premium listings
+    const pSnap = await db.collection('listings')
+      .where('status', '==', 'active')
+      .where('premium', '==', true)
+      .orderBy('createdAt', 'desc')
+      .get();
+
+    const prems = pSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+    renderPremium(prems);
+
+  } catch(e) {
+    console.error('Load error:', e);
+    // Fallback to seed data if Firebase not configured
+    renderListings(SEED_LISTINGS.filter(x=>!x.premium).map((x,i)=>({...x,id:'seed_'+i})));
+    renderPremium(SEED_LISTINGS.filter(x=>x.premium).map((x,i)=>({...x,id:'prem_'+i})));
+  }
+}
+
+// Search
+async function doSearch() {
+  const q = document.getElementById('searchInput').value.trim().toLowerCase();
+  if (!q) return;
+  try {
+    const snap = await db.collection('listings').where('status','==','active').get();
+    const results = snap.docs
+      .map(d=>({id:d.id,...d.data()}))
+      .filter(x =>
+        x.title.toLowerCase().includes(q) ||
+        x.categoryName?.toLowerCase().includes(q) ||
+        x.location?.toLowerCase().includes(q)
+      );
+    if (results.length === 0) { toast('Хайлтад тохирох зар олдсонгүй'); return; }
+    renderListings(results.filter(x=>!x.premium));
+    goTo('ls');
+    toast(`${results.length} зар олдлоо`);
+  } catch(e) {
+    toast('Хайлт амжилтгүй');
+  }
+}
+
+// ── RENDER CARD ──
+const lcard = (x, pr=false) => `
+  <div class="${pr?'pcard':'lcard'}" onclick="oo('${x.id}','${(x.title||'').replace(/'/g,"\\'")}','${x.value||''}')">
+    <div class="${pr?'ptmb':'lt'}" style="background:${x.gradient}">
+      ${Ic(x.category||'pkg', pr?80:56)}
       <div class="lba">
-        ${pr?`<span class="bpr">${S('star',10)} PREMIUM</span>`:''}
-        ${(x.ok||pr)?`<span class="bok">${S('check',10)} Баталгаажсан</span>`:''}
+        ${pr?`<span class="bpr">${Ic('star',10)} PREMIUM</span>`:''}
+        ${(x.verified||pr)?`<span class="bok">${Ic('check',10)} Баталгаажсан</span>`:''}
       </div>
     </div>
     <div class="${pr?'pbody':'lbody'}">
-      <div class="${pr?'ptit':'ltit'}">${x.t}</div>
-      <div class="${pr?'pval':'lval'}">Үнэлгээ: ${x.v}</div>
-      <div class="${pr?'pbar':'lbar'}">⇋ ${x.b}</div>
+      <div class="${pr?'ptit':'ltit'}">${x.title}</div>
+      <div class="${pr?'pval':'lval'}">Үнэлгээ: ${x.value}</div>
+      <div class="${pr?'pbar':'lbar'}">⇋ ${x.barter}</div>
       <div class="${pr?'ploc':'lmet'}">
-        ${pr?`${S('pin',12)} ${x.l}`:`<span class="lloc">${S('pin',12)} ${x.l}</span><span class="lcon">${x.c}</span>`}
+        ${pr
+          ? `${Ic('pin',12)} ${x.location}`
+          : `<span class="lloc">${Ic('pin',12)} ${x.location}</span><span class="lcon">${x.condition}</span>`}
       </div>
-      ${pr?`<button class="pbtn" onclick="event.stopPropagation();oo(${x.id})">Санал өгөх ${A()}</button>`
-          :`<button class="obtn" onclick="event.stopPropagation();oo(${x.id})">Санал өгөх</button>`}
+      ${pr
+        ? `<button class="pbtn" onclick="event.stopPropagation();oo('${x.id}','${(x.title||'').replace(/'/g,"\\'")}','${x.value||''}')">Санал өгөх ${Ar()}</button>`
+        : `<button class="obtn" onclick="event.stopPropagation();oo('${x.id}','${(x.title||'').replace(/'/g,"\\'")}','${x.value||''}')">Санал өгөх</button>`}
     </div>
   </div>`;
 
-document.getElementById('lgrid').innerHTML=LIS.map(x=>lcard(x)).join('');
-document.getElementById('pgrid').innerHTML=PREM.map(x=>lcard(x,true)).join('');
+function renderListings(items) {
+  document.getElementById('lgrid').innerHTML = items.length
+    ? items.map(x=>lcard(x)).join('')
+    : '<p style="color:#64748b;padding:2rem">Зар олдсонгүй.</p>';
+}
+function renderPremium(items) {
+  document.getElementById('pgrid').innerHTML = items.length
+    ? items.map(x=>lcard(x,true)).join('')
+    : '<p style="color:#64748b;padding:2rem">Premium зар олдсонгүй.</p>';
+}
 
-// Backers
-const bktr=document.getElementById('bktr');
-[...BKS,...BKS].forEach(b=>{
-  const s=document.createElement('span');
-  s.className='bki';s.style.cssText=b.s;s.textContent=b.n;
-  bktr.appendChild(s);
-});
-
-// UC pairs
-document.getElementById('ucp').innerHTML=UCP.map(p=>`
-  <div class="ucpa">
-    <div class="ucpi">
-      <div class="ucic">${S(p.i1,16)}</div>
-      <span style="color:#94a3b8;font-size:14px">→</span>
-      <div class="ucic">${S(p.i2,16)}</div>
-    </div>
-    <div class="ucpf">${p.f}</div>
-    <div class="ucpt">↔ ${p.t}</div>
-  </div>`).join('');
-
-if(window.innerWidth>=640) document.getElementById('hnsf').style.display='block';
-
-// ── HELPERS ──
-const g=id=>{const e=document.getElementById(id);if(e)e.scrollIntoView({behavior:'smooth'});else window.scrollTo({top:0,behavior:'smooth'})};
-const cl=id=>document.getElementById(id).classList.remove('open');
-const ss=(fId,dId)=>{document.getElementById(fId).style.display='none';document.getElementById(dId).style.display='block'};
-document.querySelectorAll('.ov').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open')}));
-
-const oo=id=>{
-  const all=[...LIS,...PREM];
-  const x=all.find(i=>i.id===id);
-  if(x) document.getElementById('osub').textContent=`${x.t} — ${x.v}`;
-  document.getElementById('of').style.display='block';
-  document.getElementById('od').style.display='none';
+// ── SUBMIT OFFER → FIRESTORE ──
+function oo(id, title, value) {
+  currentListingId = id;
+  document.getElementById('osub').textContent = `${title} — ${value}`;
+  document.getElementById('of').style.display = 'block';
+  document.getElementById('od').style.display = 'none';
+  ['oItem','oVal','oPhone','oNote'].forEach(i=>document.getElementById(i).value='');
   document.getElementById('om').classList.add('open');
-};
+}
 
-// ── WIZARD ──
-let wSt=1,wCat='',wCond='',wBt='';
-const openW=()=>{
-  wSt=1;wCat='';wCond='';wBt='';
-  document.getElementById('wf').style.display='block';
-  document.getElementById('wd').style.display='none';
+async function submitOffer() {
+  const item  = document.getElementById('oItem').value.trim();
+  const val   = document.getElementById('oVal').value.trim();
+  const phone = document.getElementById('oPhone').value.trim();
+  const note  = document.getElementById('oNote').value.trim();
+  const cash  = document.getElementById('oCash').checked;
+  if (!item || !phone) { toast('Зүйл болон утасны дугаараа оруулна уу'); return; }
+
+  const btn = document.getElementById('offerSubmitBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spin"></span>';
+
+  try {
+    await db.collection('offers').add({
+      listingId:    currentListingId,
+      offerItem:    item,
+      value:        val,
+      phone:        phone,
+      note:         note,
+      cashAvailable:cash,
+      userId:       currentUser?.uid || 'anonymous',
+      userEmail:    currentUser?.email || '',
+      createdAt:    firebase.firestore.FieldValue.serverTimestamp(),
+    });
+    document.getElementById('of').style.display = 'none';
+    document.getElementById('od').style.display = 'block';
+  } catch(e) {
+    toast('Алдаа гарлаа: ' + e.message);
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = 'Санал илгээх ' + Ar();
+  }
+}
+
+// ── WIZARD → SAVE TO FIRESTORE ──
+let wSt=1, wCat='', wCond='', wBt='';
+const wizData = {};
+
+const openW = () => {
+  wSt=1; wCat=''; wCond=''; wBt='';
+  document.getElementById('wf').style.display = 'block';
+  document.getElementById('wd').style.display = 'none';
   rw();
   document.getElementById('wm').classList.add('open');
 };
-const rw=()=>{
-  document.getElementById('wlbl').textContent=`Алхам ${wSt}/5`;
-  document.getElementById('wp').innerHTML=[1,2,3,4,5].map(s=>`<div class="ws${s<=wSt?' dn':''}"></div>`).join('');
-  let h='';
-  if(wSt===1){
+
+const rw = () => {
+  document.getElementById('wlbl').textContent = `Алхам ${wSt}/5`;
+  document.getElementById('wp').innerHTML = [1,2,3,4,5].map(s=>`<div class="ws${s<=wSt?' dn':''}"></div>`).join('');
+
+  let h = '';
+  if (wSt===1) {
     h=`<p style="font-weight:700;font-size:15px;color:#0a1b33;margin-bottom:1rem">Категори сонгох</p>
     <div class="wcs">${CATS.map(c=>`
       <button class="wc${wCat===c.n?' sl':''}" onclick="wCat='${c.n}';rw()">
-        <div class="wcic" style="background:${c.g}">${S(c.k,16)}</div>
+        <div class="wcic" style="background:${c.g}">${Ic(c.k,16)}</div>
         <div class="wn">${c.n}</div>
       </button>`).join('')}</div>`;
-  }else if(wSt===2){
+  } else if (wSt===2) {
     h=`<p style="font-weight:700;font-size:15px;color:#0a1b33;margin-bottom:1rem">Зураг оруулах</p>
-    <div class="upl">${S('img',40)}<div class="ut">Үндсэн зургаа оруулна уу</div><div class="us">JPG, PNG — 10MB хүртэл</div></div>
+    <div class="upl">${Ic('img',40)}<div class="ut">Үндсэн зургаа оруулна уу</div><div class="us">JPG, PNG — 10MB хүртэл</div></div>
     <div class="ei"><div class="esl">+</div><div class="esl">+</div><div class="esl">+</div></div>`;
-  }else if(wSt===3){
-    h=`<div class="ff"><label>Гарчиг</label><input placeholder="Жишээ: Toyota Prius 30, 2015"/></div>
-    <div class="ff"><label>Үнэлгээ (₮)</label><input placeholder="28,000,000"/></div>
-    <div class="ff"><label>Байршил</label><select><option>Сонгох...</option><option>УБ, БЗД</option><option>УБ, СБД</option><option>УБ, ЧД</option><option>УБ, БГД</option><option>УБ, Хан-Уул</option></select></div>
+  } else if (wSt===3) {
+    h=`<div class="ff"><label>Гарчиг</label><input id="wTitle" placeholder="Жишээ: Toyota Prius 30, 2015" value="${wizData.title||''}"/></div>
+    <div class="ff"><label>Үнэлгээ (₮)</label><input id="wVal" placeholder="28,000,000" value="${wizData.value||''}"/></div>
+    <div class="ff"><label>Байршил</label><select id="wLoc">
+      <option>Сонгох...</option>
+      <option>УБ, БЗД</option><option>УБ, СБД</option><option>УБ, ЧД</option><option>УБ, БГД</option><option>УБ, Хан-Уул</option>
+    </select></div>
     <div class="ff"><label>Нөхцөл</label><div class="cbs">
       <button class="cb2${wCond==='Шинэ'?' sl':''}" onclick="wCond='Шинэ';rw()">Шинэ</button>
       <button class="cb2${wCond==='Хуучин'?' sl':''}" onclick="wCond='Хуучин';rw()">Хуучин</button>
     </div></div>`;
-  }else if(wSt===4){
-    h=`<div class="ff"><label>Юугаар сольж хүсэлтэй вэ?</label><input placeholder="Жишээ: Байрны урьдчилгаа, iPhone"/></div>
+  } else if (wSt===4) {
+    h=`<div class="ff"><label>Юугаар сольж хүсэлтэй вэ?</label><input id="wBarter" placeholder="Жишээ: Байрны урьдчилгаа, iPhone" value="${wizData.barter||''}"/></div>
     <label style="display:block;font-size:13px;font-weight:700;color:#0a1b33;margin-bottom:.5rem">Бартерын төрөл</label>
     <div class="bts">${BT.map(t=>`<button class="btc${wBt===t?' sl':''}" onclick="wBt='${t}';rw()">${t}</button>`).join('')}</div>
-    <label class="fck"><input type="checkbox"/> Cash нэмэх боломжтой</label>`;
-  }else{
-    h=`<div class="ff"><label>Нэр</label><input placeholder="Таны нэр"/></div>
-    <div class="ff"><label>Утас</label><input placeholder="9911XXXX"/></div>
-    <label class="fck"><input type="checkbox"/> Chat-аар холбогдох боломжтой</label>`;
+    <label class="fck"><input type="checkbox" id="wCash"/> Cash нэмэх боломжтой</label>`;
+  } else {
+    h=`<div class="ff"><label>Нэр</label><input id="wName" placeholder="Таны нэр"/></div>
+    <div class="ff"><label>Утас</label><input id="wPhone" placeholder="9911XXXX"/></div>
+    <div class="ff"><label>Дэлгэрэнгүй тайлбар</label><textarea id="wDesc" rows="3" placeholder="Барааны талаар нэмэлт мэдээлэл..."></textarea></div>
+    <label class="fck"><input type="checkbox" id="wChat"/> Chat-аар холбогдох боломжтой</label>`;
   }
-  document.getElementById('wcon').innerHTML=h;
-  let f=wSt>1?`<button class="wbk" onclick="wSt--;rw()">Өмнөх</button>`:'';
-  f+=wSt<5
-    ?`<button class="wnx" onclick="wSt++;rw()">Дараах ${A()}</button>`
-    :`<button class="wnx" onclick="ss('wf','wd')">Нийтлэх ${A()}</button>`;
-  document.getElementById('wft').innerHTML=f;
+
+  document.getElementById('wcon').innerHTML = h;
+
+  let f = wSt>1 ? `<button class="wbk" onclick="wStep()">Өмнөх</button>` : '';
+  if (wSt<5) {
+    f += `<button class="wnx" onclick="wNext()">Дараах ${Ar()}</button>`;
+  } else {
+    f += `<button class="wnx" id="publishBtn" onclick="publishListing()">Нийтлэх ${Ar()}</button>`;
+  }
+  document.getElementById('wft').innerHTML = f;
 };
+
+function wStep() { wSt--; rw(); }
+
+function wNext() {
+  if (wSt===3) {
+    wizData.title = document.getElementById('wTitle')?.value || '';
+    wizData.value = document.getElementById('wVal')?.value || '';
+    wizData.location = document.getElementById('wLoc')?.value || '';
+  }
+  if (wSt===4) {
+    wizData.barter = document.getElementById('wBarter')?.value || '';
+  }
+  wSt++;
+  rw();
+}
+
+async function publishListing() {
+  const name  = document.getElementById('wName')?.value.trim() || '';
+  const phone = document.getElementById('wPhone')?.value.trim() || '';
+  const desc  = document.getElementById('wDesc')?.value.trim() || '';
+  if (!wizData.title || !phone) { toast('Гарчиг болон утасны дугаараа оруулна уу'); return; }
+
+  const btn = document.getElementById('publishBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spin"></span>';
+
+  const catObj = CATS.find(c=>c.n===wCat) || CATS[0];
+
+  try {
+    await db.collection('listings').add({
+      title:        wizData.title,
+      value:        wizData.value,
+      barter:       wizData.barter || wBt,
+      location:     wizData.location,
+      category:     catObj.k,
+      categoryName: wCat || catObj.n,
+      condition:    wCond || 'Шинэ',
+      gradient:     catObj.g,
+      verified:     false,
+      premium:      false,
+      status:       'active',
+      contactName:  name,
+      contactPhone: phone,
+      description:  desc,
+      userId:       currentUser?.uid || 'anonymous',
+      userEmail:    currentUser?.email || '',
+      createdAt:    firebase.firestore.FieldValue.serverTimestamp(),
+    });
+
+    document.getElementById('wf').style.display = 'none';
+    document.getElementById('wd').style.display = 'block';
+
+  } catch(e) {
+    toast('Алдаа: ' + e.message);
+    btn.disabled = false;
+    btn.innerHTML = 'Нийтлэх ' + Ar();
+  }
+}
+
+// ── STATIC RENDERS ──
+// Marquee
+const mqt = document.getElementById('mqt');
+[...CATS,...CATS,...CATS].forEach(c => {
+  const b = document.createElement('button');
+  b.className = 'mqc';
+  b.innerHTML = `${Ic(c.k,20)}<span>${c.n}</span>`;
+  b.onclick = () => goTo('cgs');
+  b.addEventListener('mouseenter', ()=>{ b.style.background=c.g; b.style.color='#fff'; b.style.borderColor='transparent' });
+  b.addEventListener('mouseleave', ()=>{ b.style.cssText='' });
+  mqt.appendChild(b);
+});
+
+// Chips
+document.getElementById('cr').innerHTML = CHIPS.map(c=>`<button class="chip" onclick="this.classList.toggle('on')">${c}</button>`).join('');
+
+// Cat grid
+document.getElementById('cgrid').innerHTML = CATS.map(c=>`
+  <button class="cc" onclick="goTo('ls')">
+    <div class="ci" style="background:${c.g}">${Ic(c.k,20)}</div>
+    <div class="cn">${c.n}</div>
+    <div class="cd">${c.d}</div>
+  </button>`).join('');
+
+// Backers
+const bktr = document.getElementById('bktr');
+[...BKS,...BKS].forEach(b => {
+  const s = document.createElement('span');
+  s.className='bki'; s.style.cssText=b.s; s.textContent=b.n;
+  bktr.appendChild(s);
+});
+
+// UC pairs
+document.getElementById('ucp').innerHTML = UCP.map(p=>`
+  <div class="ucpa">
+    <div class="ucpi"><div class="ucic">${Ic(p.i1,16)}</div><span style="color:#94a3b8;font-size:14px">→</span><div class="ucic">${Ic(p.i2,16)}</div></div>
+    <div class="ucpf">${p.f}</div><div class="ucpt">↔ ${p.t}</div>
+  </div>`).join('');
+
+if (window.innerWidth>=640) document.getElementById('hnsf').style.display='block';
+
+// ── UTILS ──
+const cl   = id => document.getElementById(id).classList.remove('open');
+const goTo = id => { const e=document.getElementById(id); if(e) e.scrollIntoView({behavior:'smooth'}); else window.scrollTo({top:0,behavior:'smooth'}) };
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2800);
+}
+
+document.querySelectorAll('.ov').forEach(o => o.addEventListener('click', e=>{ if(e.target===o) o.classList.remove('open') }));
+
+// ── INIT ──
+loadData();
 </script>
 </body>
 </html>
